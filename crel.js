@@ -11,6 +11,26 @@
     This code is not formatted for readability, but rather run-speed and to assist compilers.
     
     However, the code's intention should be transparent.
+    
+    *** IE SUPPORT ***
+    
+    If you require this library to work in IE7, add the following after declaring crel.
+    
+    var testDiv = document.createElement('div'),
+        testLabel = document.createElement('label');
+
+    testDiv.setAttribute('class', 'a');    
+    testDiv['className'] !== 'a' ? crel.attrMap['class'] = 'className':undefined;
+    testDiv.setAttribute('name','a');
+    testDiv['name'] !== 'a' ? crel.attrMap['name'] = function(element, value){
+        element.id = value;
+    }:undefined;
+    
+
+    testLabel.setAttribute('for', 'a');
+    testLabel['htmlFor'] !== 'a' ? crel.attrMap['for'] = 'htmlFor':undefined;
+    
+    
 
 */
 
@@ -68,11 +88,19 @@ window.crel = (function(undefined){
         }
 
         for(var key in settings){
-            element.setAttribute(key, settings[key]);
+            var attr = crel.attrMap[key] || key;
+            if(typeof attr === 'function'){     
+                attr(element, settings[key]);               
+            }else{            
+                element.setAttribute(attr, settings[key]);
+            }
         }
         
         return element;
     }
+    
+    // Used for mapping one kind of attribute to the supported version of that in bad browsers.
+    crel['attrMap'] = {};
     
     // String referenced so that compilers maintain the property name.
     crel["isNode"] = isNode;
