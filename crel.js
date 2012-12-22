@@ -90,7 +90,7 @@ window.crel = (function(undefined){
         
         for(var key in settings){
             if(!attributeMap[key]){
-                element.setAttribute(attr, settings[key]);
+                element.setAttribute(key, settings[key]);
             }else{
                 var attr = crel.attrMap[key];
                 if(typeof attr === 'function'){     
