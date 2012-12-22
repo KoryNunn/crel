@@ -50,7 +50,8 @@ window.crel = (function(undefined){
             type,
             settings,
             children,
-            element;
+            element,
+            attributeMap = crel.attrMap;
 
         // shortcut (approx twice as fast as going through slice.call)
         if(arguments.length === 1){
@@ -86,13 +87,17 @@ window.crel = (function(undefined){
                 element.appendChild(child);
             }
         }
-
+        
         for(var key in settings){
-            var attr = crel.attrMap[key] || key;
-            if(typeof attr === 'function'){     
-                attr(element, settings[key]);               
-            }else{            
+            if(!attributeMap[key]){
                 element.setAttribute(attr, settings[key]);
+            }else{
+                var attr = crel.attrMap[key];
+                if(typeof attr === 'function'){     
+                    attr(element, settings[key]);               
+                }else{            
+                    element.setAttribute(attr, settings[key]);
+                }
             }
         }
         
