@@ -1,3 +1,4 @@
+/*global define Node window*/
 //Copyright (C) 2012 Kory Nunn
 
 //Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
@@ -9,43 +10,55 @@
 /*
 
     This code is not formatted for readability, but rather run-speed and to assist compilers.
-    
+
     However, the code's intention should be transparent.
-    
+
     *** IE SUPPORT ***
-    
+
     If you require this library to work in IE7, add the following after declaring crel.
-    
+
     var testDiv = document.createElement('div'),
         testLabel = document.createElement('label');
 
-    testDiv.setAttribute('class', 'a');    
+    testDiv.setAttribute('class', 'a');
     testDiv['className'] !== 'a' ? crel.attrMap['class'] = 'className':undefined;
     testDiv.setAttribute('name','a');
     testDiv['name'] !== 'a' ? crel.attrMap['name'] = function(element, value){
         element.id = value;
     }:undefined;
-    
+
 
     testLabel.setAttribute('for', 'a');
     testLabel['htmlFor'] !== 'a' ? crel.attrMap['for'] = 'htmlFor':undefined;
-    
-    
-
 */
 
-window.crel = (function(undefined){
+(function (root, factory) {
+    "use strict";
+    if (typeof define === 'function' && define.amd) {
+        define([], function () {
+            return (root.crel = factory());
+        });
+    } else {
+        root.crel = factory();
+    }
+}(this, function () {
+    "use strict";
     var arrayProto = [];
-    
-    function isNode(object){
+
+    function isNode(object) {
         // http://stackoverflow.com/questions/384286/javascript-isdom-how-do-you-check-if-a-javascript-object-is-a-dom-object
         return (
-            typeof Node === "object" ? object instanceof Node : 
-            object && typeof object === "object" && typeof object.nodeType === "number" && typeof object.nodeName==="string"
+            typeof Node === "object" ? object instanceof Node :
+            object && typeof object === "object" && typeof object.nodeType === "number" && typeof object.nodeName === "string"
         );
-    };
-    function crel(){
-        var document = window.document,
+    }
+
+    function crel() {
+        var i,
+            child,
+            attr,
+            key,
+            document = window.document,
             args = arguments,
             type,
             settings,
@@ -54,7 +67,7 @@ window.crel = (function(undefined){
             attributeMap = crel.attrMap;
 
         // shortcut (approx twice as fast as going through slice.call)
-        if(arguments.length === 1){
+        if (arguments.length === 1) {
             return document.createElement(arguments[0]);
         }
 
@@ -63,52 +76,52 @@ window.crel = (function(undefined){
         settings = args.shift();
         children = args;
         element = document.createElement(type);
-            
-        if(isNode(settings) || typeof settings !== 'object') {
-            children = [settings].concat(children); 
+
+        if (isNode(settings) || typeof settings !== 'object') {
+            children = [settings].concat(children);
             settings = {};
         }
-        
-        // shortcut if there is only one child that is a string    
-        if(children.length === 1 && typeof children[0] === 'string' && element.textContent !== undefined){
+
+        // shortcut if there is only one child that is a string
+        if (children.length === 1 && typeof children[0] === 'string' && element.textContent !== undefined) {
             element.textContent = children[0];
-        }else{    
-            for(var i = 0; i < children.length; i++){
+        } else {
+            for (i = 0; i < children.length; i += 1) {
                 child = children[i];
-                
-                if(child == null){
+
+                if (child == null) {
                     continue;
                 }
-                
-                if(!isNode(child)){
+
+                if (!isNode(child)) {
                     child = document.createTextNode(child);
                 }
-                
+
                 element.appendChild(child);
             }
         }
-        
-        for(var key in settings){
-            if(!attributeMap[key]){
+
+        for (key in settings) {
+            if (!attributeMap[key]) {
                 element.setAttribute(key, settings[key]);
-            }else{
-                var attr = crel.attrMap[key];
-                if(typeof attr === 'function'){     
-                    attr(element, settings[key]);               
-                }else{            
+            } else {
+                attr = crel.attrMap[key];
+                if (typeof attr === 'function') {
+                    attr(element, settings[key]);
+                } else {
                     element.setAttribute(attr, settings[key]);
                 }
             }
         }
-        
+
         return element;
     }
-    
+
     // Used for mapping one kind of attribute to the supported version of that in bad browsers.
-    crel['attrMap'] = {};
-    
+    crel.attrMap = {};
+
     // String referenced so that compilers maintain the property name.
-    crel["isNode"] = isNode;
-    
+    crel.isNode = isNode;
+
     return crel;
-})();
+}));
