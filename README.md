@@ -29,7 +29,7 @@ To make some DOM:
     
 # Goals #
 
-## Easiy to use ##
+## Easy to use ##
 
 ## Tiny ##
 (easily less than 1K minified)
