@@ -49,10 +49,9 @@ window.crel = (function(undefined){
             element = document.createElement(arguments[0]),
             settings = arguments[1],
             childIdx = 2,
-            children,
             attributeMap = crel.attrMap;
 
-        // shortcut (approx twice as fast as going through slice.call)
+        // shortcut
         if(arguments.length === 1){
             return element;
         }
@@ -62,14 +61,12 @@ window.crel = (function(undefined){
             settings = {};
         }
 
-        children = arrayProto.slice.call(arguments, childIdx);
-
         // shortcut if there is only one child that is a string    
-        if(children.length === 1 && typeof children[0] === 'string' && element.textContent !== undefined){
-            element.textContent = children[0];
+        if((arguments.length - childIdx) === 1 && typeof arguments[childIdx] === 'string' && element.textContent !== undefined){
+            element.textContent = arguments[childIdx];
         }else{    
-            for(var i = 0; i < children.length; i++){
-                child = children[i];
+            for(var i = childIdx; i < arguments.length; i++){
+                child = arguments[i];
                 
                 if(child == null){
                     continue;
