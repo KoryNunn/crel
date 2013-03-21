@@ -37,7 +37,7 @@ To make some DOM:
 
 crel is fast. Depending on what browser you use, it is up there with straight document.createElement calls.
 
-http://jsperf.com/dom-creation-libs
+http://jsperf.com/dom-creation-libs/10
 
 # License #
 
