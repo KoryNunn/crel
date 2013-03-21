@@ -36,14 +36,17 @@
 
 window.crel = (function(undefined){
     var arrayProto = [];
-    
-    function isNode(object){
-        // http://stackoverflow.com/questions/384286/javascript-isdom-how-do-you-check-if-a-javascript-object-is-a-dom-object
-        return (
-            typeof Node === "object" ? object instanceof Node : 
-            object && typeof object === "object" && typeof object.nodeType === "number" && typeof object.nodeName==="string"
-        );
-    };
+
+    // based on http://stackoverflow.com/questions/384286/javascript-isdom-how-do-you-check-if-a-javascript-object-is-a-dom-object
+    var isNode = typeof Node === 'object'
+        ? function (object) { return object instanceof Node }
+        : function (object) {
+            return object
+                && typeof object === 'object'
+                && typeof object.nodeType === 'number'
+                && typeof object.nodeName === 'string';
+        };
+
     function crel(){
         var document = window.document,
             element = document.createElement(arguments[0]),
