@@ -49,10 +49,11 @@ window.crel = (function(undefined){
             element = document.createElement(arguments[0]),
             settings = arguments[1],
             childIdx = 2,
+            arglen = arguments.length,
             attributeMap = crel.attrMap;
 
         // shortcut
-        if(arguments.length === 1){
+        if(arglen === 1){
             return element;
         }
 
@@ -62,11 +63,11 @@ window.crel = (function(undefined){
         }
 
         // shortcut if there is only one child that is a string    
-        if((arguments.length - childIdx) === 1 && typeof arguments[childIdx] === 'string' && element.textContent !== undefined){
+        if((arglen - childIdx) === 1 && typeof arguments[childIdx] === 'string' && element.textContent !== undefined){
             element.textContent = arguments[childIdx];
         }else{    
-            for(var i = childIdx; i < arguments.length; i++){
-                child = arguments[i];
+            for(; childIdx < arglen; ++childIdx){
+                child = arguments[childIdx];
                 
                 if(child == null){
                     continue;
