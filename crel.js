@@ -36,45 +36,41 @@
 
 window.crel = (function(undefined){
     var arrayProto = [];
-    
-    function isNode(object){
-        // http://stackoverflow.com/questions/384286/javascript-isdom-how-do-you-check-if-a-javascript-object-is-a-dom-object
-        return (
-            typeof Node === "object" ? object instanceof Node : 
-            object && typeof object === "object" && typeof object.nodeType === "number" && typeof object.nodeName==="string"
-        );
-    };
+
+    // based on http://stackoverflow.com/questions/384286/javascript-isdom-how-do-you-check-if-a-javascript-object-is-a-dom-object
+    var isNode = typeof Node === 'object'
+        ? function (object) { return object instanceof Node }
+        : function (object) {
+            return object
+                && typeof object === 'object'
+                && typeof object.nodeType === 'number'
+                && typeof object.nodeName === 'string';
+        };
+
     function crel(){
         var document = window.document,
-            args = arguments,
-            type,
-            settings,
-            children,
-            element,
+            element = document.createElement(arguments[0]),
+            settings = arguments[1],
+            childIdx = 2,
+            arglen = arguments.length,
             attributeMap = crel.attrMap;
 
-        // shortcut (approx twice as fast as going through slice.call)
-        if(arguments.length === 1){
-            return document.createElement(arguments[0]);
+        // shortcut
+        if(arglen === 1){
+            return element;
         }
 
-        args = arrayProto.slice.call(arguments);
-        type = args.shift();
-        settings = args.shift();
-        children = args;
-        element = document.createElement(type);
-            
-        if(isNode(settings) || typeof settings !== 'object') {
-            children = [settings].concat(children); 
+        if(typeof settings !== 'object' || isNode(settings)) {
+            --childIdx;
             settings = {};
         }
-        
+
         // shortcut if there is only one child that is a string    
-        if(children.length === 1 && typeof children[0] === 'string' && element.textContent !== undefined){
-            element.textContent = children[0];
+        if((arglen - childIdx) === 1 && typeof arguments[childIdx] === 'string' && element.textContent !== undefined){
+            element.textContent = arguments[childIdx];
         }else{    
-            for(var i = 0; i < children.length; i++){
-                child = children[i];
+            for(; childIdx < arglen; ++childIdx){
+                child = arguments[childIdx];
                 
                 if(child == null){
                     continue;
