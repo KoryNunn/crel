@@ -35,7 +35,6 @@
 */
 
 window.crel = (function(undefined){
-    var arrayProto = [];
 
     // based on http://stackoverflow.com/questions/384286/javascript-isdom-how-do-you-check-if-a-javascript-object-is-a-dom-object
     var isNode = typeof Node === 'object'
@@ -49,28 +48,29 @@ window.crel = (function(undefined){
 
     function crel(){
         var document = window.document,
-            element = document.createElement(arguments[0]),
-            settings = arguments[1],
-            childIdx = 2,
-            arglen = arguments.length,
+            args = arguments, //Note: assigned to a variable to assist compilers. Saves about 40k in closure compiler. Has negligable effect on performance.
+            element = document.createElement(args[0]),
+            settings = args[1],
+            childIndex = 2,
+            argumentsLength = args.length,
             attributeMap = crel.attrMap;
 
         // shortcut
-        if(arglen === 1){
+        if(argumentsLength === 1){
             return element;
         }
 
         if(typeof settings !== 'object' || isNode(settings)) {
-            --childIdx;
-            settings = {};
+            --childIndex;
+            settings = null;
         }
 
         // shortcut if there is only one child that is a string    
-        if((arglen - childIdx) === 1 && typeof arguments[childIdx] === 'string' && element.textContent !== undefined){
-            element.textContent = arguments[childIdx];
+        if((argumentsLength - childIndex) === 1 && typeof args[childIndex] === 'string' && element.textContent !== undefined){
+            element.textContent = args[childIndex];
         }else{    
-            for(; childIdx < arglen; ++childIdx){
-                child = arguments[childIdx];
+            for(; childIndex < argumentsLength; ++childIndex){
+                child = args[childIndex];
                 
                 if(child == null){
                     continue;
@@ -101,6 +101,7 @@ window.crel = (function(undefined){
     }
     
     // Used for mapping one kind of attribute to the supported version of that in bad browsers.
+    // String referenced so that compilers maintain the property name.
     crel['attrMap'] = {};
     
     // String referenced so that compilers maintain the property name.
