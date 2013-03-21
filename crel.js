@@ -46,10 +46,9 @@ window.crel = (function(undefined){
     };
     function crel(){
         var document = window.document,
-            args = arguments,
-            settings,
             children,
             element = document.createElement(arguments[0]),
+            settings = arguments[1],
             attributeMap = crel.attrMap;
 
         // shortcut (approx twice as fast as going through slice.call)
@@ -57,9 +56,7 @@ window.crel = (function(undefined){
             return element;
         }
 
-        args = arrayProto.slice.call(arguments, 1);
-        settings = args.shift();
-        children = args;
+        children = arrayProto.slice.call(arguments, 2);
             
         if(isNode(settings) || typeof settings !== 'object') {
             children = [settings].concat(children); 
