@@ -57,7 +57,7 @@ window.crel = (function(undefined){
             return element;
         }
 
-        if(isNode(settings) || typeof settings !== 'object') {
+        if(typeof settings !== 'object' || isNode(settings)) {
             --childIdx;
             settings = {};
         }
