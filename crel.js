@@ -48,7 +48,7 @@ window.crel = (function(undefined){
 
     function crel(){
         var document = window.document,
-            args = arguments, //Note: assigned to a variable to assist compilers. Saves about 40k in closure compiler. Has negligable effect on performance.
+            args = arguments, //Note: assigned to a variable to assist compilers. Saves about 40 bytes in closure compiler. Has negligable effect on performance.
             element = document.createElement(args[0]),
             settings = args[1],
             childIndex = 2,
