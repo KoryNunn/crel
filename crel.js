@@ -34,8 +34,16 @@
 
 */
 
-window.crel = (function(undefined){
-
+// if the module has no dependencies, the above pattern can be simplified to
+(function (root, factory) {
+    if (typeof exports === 'object') {
+        module.exports = factory();
+    } else if (typeof define === 'function' && define.amd) {
+        define(factory);
+    } else {
+        root.crel = factory();
+  }
+}(this, function () {
     // based on http://stackoverflow.com/questions/384286/javascript-isdom-how-do-you-check-if-a-javascript-object-is-a-dom-object
     var isNode = typeof Node === 'object'
         ? function (object) { return object instanceof Node }
@@ -108,4 +116,4 @@ window.crel = (function(undefined){
     crel["isNode"] = isNode;
     
     return crel;
-})();
+}));
