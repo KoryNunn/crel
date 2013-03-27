@@ -1,0 +1,21 @@
+{
+  "name": "crel",
+  "description": "A small, simple, and fast DOM creation utility",
+  "author": "Kory Nunn <knunn187@gmail.com>",
+  "tags": [
+    "DOM"
+  ],
+  "version": "0.0.0",
+  "main": "crel.js",
+  "dependencies": {},
+  "devDependencies": {
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/KoryNunn/crel.git"
+  },
+  "bugs": {
+    "url": "http://github.com/KoryNunn/crel/issues"
+  },
+  "contributors": []
+}
