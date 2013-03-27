@@ -58,6 +58,7 @@
         var document = window.document,
             args = arguments, //Note: assigned to a variable to assist compilers. Saves about 40 bytes in closure compiler. Has negligable effect on performance.
             element = document.createElement(args[0]),
+            child,
             settings = args[1],
             childIndex = 2,
             argumentsLength = args.length,
