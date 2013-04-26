@@ -34,8 +34,16 @@
 
 */
 
-window.crel = (function(undefined){
-
+// if the module has no dependencies, the above pattern can be simplified to
+(function (root, factory) {
+    if (typeof exports === 'object') {
+        module.exports = factory();
+    } else if (typeof define === 'function' && define.amd) {
+        define(factory);
+    } else {
+        root.crel = factory();
+  }
+}(this, function () {
     // based on http://stackoverflow.com/questions/384286/javascript-isdom-how-do-you-check-if-a-javascript-object-is-a-dom-object
     var isNode = typeof Node === 'object'
         ? function (object) { return object instanceof Node }
@@ -50,6 +58,7 @@ window.crel = (function(undefined){
         var document = window.document,
             args = arguments, //Note: assigned to a variable to assist compilers. Saves about 40 bytes in closure compiler. Has negligable effect on performance.
             element = document.createElement(args[0]),
+            child,
             settings = args[1],
             childIndex = 2,
             argumentsLength = args.length,
@@ -108,4 +117,4 @@ window.crel = (function(undefined){
     crel["isNode"] = isNode;
     
     return crel;
-})();
+}));
