@@ -34,7 +34,6 @@
 
 */
 
-// if the module has no dependencies, the above pattern can be simplified to
 (function (root, factory) {
     if (typeof exports === 'object') {
         module.exports = factory();
@@ -42,7 +41,7 @@
         define(factory);
     } else {
         root.crel = factory();
-  }
+    }
 }(this, function () {
     // based on http://stackoverflow.com/questions/384286/javascript-isdom-how-do-you-check-if-a-javascript-object-is-a-dom-object
     var isNode = typeof Node === 'object'
