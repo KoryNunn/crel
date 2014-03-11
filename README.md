@@ -17,6 +17,16 @@ Inspiration was taken from https://github.com/joestelmach/laconic, but crel wont
 
 # Usage #
 
+For browserify:
+
+    npm i crel
+    
+    var crel = require('crel');
+    
+For standard script tag style:
+
+    <script src="crel.min.js"></script>
+
 To make some DOM:
 
     var element = crel('div', 
