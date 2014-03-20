@@ -17,7 +17,7 @@ Inspiration was taken from https://github.com/joestelmach/laconic, but crel wont
 
 # Usage #
 
-Signaute:
+Signature:
 
     crel(tagName/dom element, [attributes, child1, child2, childN...])
 
@@ -66,7 +66,7 @@ You could probably use crel to rearrange existing dom..
         crel(someOtherDiv, anotherOne)
     )
     
-But dont.
+But don't.
     
 # Goals #
 
