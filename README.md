@@ -19,7 +19,7 @@ Inspiration was taken from https://github.com/joestelmach/laconic, but crel wont
 
 Signature:
 
-    crel(tagName/dom element, [attributes, child1, child2, childN...])
+    crel(tagName/dom element [, attributes, child1, child2, childN...])
 
 For browserify:
 
