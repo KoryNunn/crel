@@ -44,7 +44,6 @@
     }
 }(this, function () {
     var fn = 'function',
-        d = document,
         isElement = typeof Element === fn ? function (object) {
             return object instanceof Element;
         } :
@@ -59,7 +58,7 @@
         },
         appendChild = function(element, child) {
           if(!isElement(child)){
-              child = d.createTextNode(child);
+              child = document.createTextNode(child);
           }
           element.appendChild(child);
         };
@@ -74,7 +73,7 @@
             argumentsLength = args.length,
             attributeMap = crel.attrMap;
 
-        element = crel.isElement(element) ? element : d.createElement(element);
+        element = crel.isElement(element) ? element : document.createElement(element);
         // shortcut
         if(argumentsLength === 1){
             return element;
