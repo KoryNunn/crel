@@ -43,24 +43,30 @@
         root.crel = factory();
     }
 }(this, function () {
-    // based on http://stackoverflow.com/questions/384286/javascript-isdom-how-do-you-check-if-a-javascript-object-is-a-dom-object
-    var isElement = function (object) {
+    var fn = 'function',
+        d = document,
+        isElement = typeof Element === fn ? function (object) {
             return object instanceof Element;
+        } :
+        // in IE <= 8 Element is an object, obviously..
+        function(object){
+            return (typeof object==="object") &&
+                (object.nodeType===1) &&
+                (typeof object.ownerDocument ==="object");
         },
         isArray = function(a){
             return a instanceof Array;
         },
         appendChild = function(element, child) {
           if(!isElement(child)){
-              child = document.createTextNode(child);
+              child = d.createTextNode(child);
           }
           element.appendChild(child);
         };
 
 
     function crel(){
-        var document = window.document,
-            args = arguments, //Note: assigned to a variable to assist compilers. Saves about 40 bytes in closure compiler. Has negligable effect on performance.
+        var args = arguments, //Note: assigned to a variable to assist compilers. Saves about 40 bytes in closure compiler. Has negligable effect on performance.
             element = args[0],
             child,
             settings = args[1],
@@ -68,13 +74,13 @@
             argumentsLength = args.length,
             attributeMap = crel.attrMap;
 
-        element = isElement(element) ? element : document.createElement(element);
+        element = crel.isElement(element) ? element : d.createElement(element);
         // shortcut
         if(argumentsLength === 1){
             return element;
         }
 
-        if(typeof settings !== 'object' || isElement(settings) || isArray(settings)) {
+        if(typeof settings !== 'object' || crel.isElement(settings) || isArray(settings)) {
             --childIndex;
             settings = null;
         }
@@ -105,7 +111,7 @@
                 element.setAttribute(key, settings[key]);
             }else{
                 var attr = crel.attrMap[key];
-                if(typeof attr === 'function'){
+                if(typeof attr === fn){
                     attr(element, settings[key]);
                 }else{
                     element.setAttribute(attr, settings[key]);
