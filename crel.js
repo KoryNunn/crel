@@ -44,21 +44,18 @@
     }
 }(this, function () {
     // based on http://stackoverflow.com/questions/384286/javascript-isdom-how-do-you-check-if-a-javascript-object-is-a-dom-object
-    var isNode = typeof Node === 'object'
-        ? function (object) { return object instanceof Node; }
-        : function (object) {
-            return object
-                && typeof object === 'object'
-                && typeof object.nodeType === 'number'
-                && typeof object.nodeName === 'string';
+    var isElement = function (object) {
+            return object instanceof Element;
+        },
+        isArray = function(a){
+            return a instanceof Array;
+        },
+        appendChild = function(element, child) {
+          if(!isElement(child)){
+              child = document.createTextNode(child);
+          }
+          element.appendChild(child);
         };
-    var isArray = function(a){ return a instanceof Array; };
-    var appendChild = function(element, child) {
-      if(!isNode(child)){
-          child = document.createTextNode(child);
-      }
-      element.appendChild(child);
-    };
 
 
     function crel(){
@@ -71,13 +68,13 @@
             argumentsLength = args.length,
             attributeMap = crel.attrMap;
 
-        element = isNode(element) ? element : document.createElement(element);
+        element = isElement(element) ? element : document.createElement(element);
         // shortcut
         if(argumentsLength === 1){
             return element;
         }
 
-        if(typeof settings !== 'object' || isNode(settings) || isArray(settings)) {
+        if(typeof settings !== 'object' || isElement(settings) || isArray(settings)) {
             --childIndex;
             settings = null;
         }
@@ -124,7 +121,7 @@
     crel['attrMap'] = {};
 
     // String referenced so that compilers maintain the property name.
-    crel["isNode"] = isNode;
+    crel["isElement"] = isElement;
 
     return crel;
 }));

@@ -65,3 +65,22 @@ test('add attributes to an existing element', function(t) {
 
     t.end();
 });
+
+test('isElement', function(t) {
+    t.plan(2);
+
+    var element = document.createElement('div'),
+        textNode = document.createTextNode('text');
+
+    t.ok(
+        crel.isElement(element),
+        'a <div> is an element'
+    );
+
+    t.notOk(
+        crel.isElement(textNode),
+        'a textNode is not an element'
+    );
+
+    t.end();
+});

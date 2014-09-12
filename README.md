@@ -1,5 +1,7 @@
-crel
-====
+# crel
+
+![logo](logo.png)
+
 
 # What #
 
@@ -19,20 +21,21 @@ Inspiration was taken from https://github.com/joestelmach/laconic, but crel wont
 
 To make some DOM:
 
-    var element = crel('div', 
+    var element = crel('div',
         crel('h1', 'Crello World!'),
         crel('p', 'This is crel'),
         crel('input', {type: 'number'})
     )
-    
+
     // Do something with 'element'
-    
+
 # Goals #
 
 ## Easy to use ##
 
 ## Tiny ##
-(easily less than 1K minified)
+easily less than 1K minified
+easily less than 500 bytes gzipped
 ## Fast ##
 
 crel is fast. Depending on what browser you use, it is up there with straight document.createElement calls.

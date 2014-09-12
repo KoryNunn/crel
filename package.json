@@ -11,6 +11,9 @@
   "devDependencies": {
     "tape": "2.0.x"
   },
+  "scripts":{
+    "build":"browserify test/index.js > test/index.browser.js"
+  },
   "repository": {
     "type": "git",
     "url": "git://github.com/KoryNunn/crel.git"
