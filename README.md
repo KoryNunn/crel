@@ -1,6 +1,4 @@
-# crel
-
-![logo](logo.png)
+![crel](logo.png)
 
 
 # What #
