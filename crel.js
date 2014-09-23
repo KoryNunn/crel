@@ -49,7 +49,8 @@
         } :
         // in IE <= 8 Element is an object, obviously..
         function(object){
-            return (typeof object==="object") &&
+            return object &&
+                (typeof object==="object") &&
                 (object.nodeType===1) &&
                 (typeof object.ownerDocument ==="object");
         },
