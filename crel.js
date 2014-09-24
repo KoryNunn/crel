@@ -65,7 +65,7 @@
             return a instanceof Array;
         },
         appendChild = function(element, child) {
-          if(!isElement(child)){
+          if(!isNode(child)){
               child = document.createTextNode(child);
           }
           element.appendChild(child);
