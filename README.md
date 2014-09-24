@@ -1,6 +1,4 @@
-# crel
-
-![logo](logo.png)
+![crel](logo.png)
 
 
 # What #
@@ -79,6 +77,30 @@ crel(someDiv,
 ```
 
 But don't.
+
+# Browser support
+
+Crel works in everything (as far as I know), but ofcourse...
+
+##  IE SUPPORT
+
+If you require this library to work in IE7, add the following after declaring crel.
+
+```javascript
+var testDiv = document.createElement('div'),
+    testLabel = document.createElement('label');
+
+testDiv.setAttribute('class', 'a');
+testDiv['className'] !== 'a' ? crel.attrMap['class'] = 'className':undefined;
+testDiv.setAttribute('name','a');
+testDiv['name'] !== 'a' ? crel.attrMap['name'] = function(element, value){
+    element.id = value;
+}:undefined;
+
+
+testLabel.setAttribute('for', 'a');
+testLabel['htmlFor'] !== 'a' ? crel.attrMap['for'] = 'htmlFor':undefined;
+```
 
 # Goals #
 
