@@ -44,15 +44,22 @@
     }
 }(this, function () {
     var fn = 'function',
-        isElement = typeof Element === fn ? function (object) {
-            return object instanceof Element;
+        obj = 'object',
+        isType = function(a, type){
+            return typeof a === type;
+        },
+        isNode = isType(Node, fn) ? function (object) {
+            return object instanceof Node;
         } :
-        // in IE <= 8 Element is an object, obviously..
+        // in IE <= 8 Node is an object, obviously..
         function(object){
             return object &&
-                (typeof object==="object") &&
-                (object.nodeType===1) &&
-                (typeof object.ownerDocument ==="object");
+                isType(object, obj) &&
+                ('nodeType' in object) &&
+                isType(object.ownerDocument,obj);
+        },
+        isElement = function (object) {
+            return crel.isNode(object) && object.nodeType === 1;
         },
         isArray = function(a){
             return a instanceof Array;
@@ -80,13 +87,13 @@
             return element;
         }
 
-        if(typeof settings !== 'object' || crel.isElement(settings) || isArray(settings)) {
+        if(!isType(settings,obj) || crel.isNode(settings) || isArray(settings)) {
             --childIndex;
             settings = null;
         }
 
         // shortcut if there is only one child that is a string
-        if((argumentsLength - childIndex) === 1 && typeof args[childIndex] === 'string' && element.textContent !== undefined){
+        if((argumentsLength - childIndex) === 1 && isType(args[childIndex], 'string') && element.textContent !== undefined){
             element.textContent = args[childIndex];
         }else{
             for(; childIndex < argumentsLength; ++childIndex){
@@ -128,6 +135,7 @@
 
     // String referenced so that compilers maintain the property name.
     crel["isElement"] = isElement;
+    crel["isNode"] = isNode;
 
     return crel;
 }));

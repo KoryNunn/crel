@@ -84,3 +84,38 @@ test('isElement', function(t) {
 
     t.end();
 });
+
+test('isNode', function(t) {
+    t.plan(2);
+
+    var element = document.createElement('div'),
+        textNode = document.createTextNode('text');
+
+    t.ok(
+        crel.isNode(element),
+        'a <div> is an element'
+    );
+
+    t.ok(
+        crel.isNode(textNode),
+        'a textNode is not an element'
+    );
+
+    t.end();
+});
+
+test('pass a text node as the first child', function(t) {
+    t.plan(1);
+
+    var textNode = document.createTextNode('text');
+
+    var element = crel('div', textNode);
+
+    t.equal(
+        element.childNodes.length,
+        1,
+        'textNode was appended'
+    );
+
+    t.end();
+});

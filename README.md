@@ -85,8 +85,8 @@ But don't.
 ## Easy to use ##
 
 ## Tiny ##
-easily less than 1K minified
-easily less than 500 bytes gzipped
+less than 1K minified
+about 500 bytes gzipped
 ## Fast ##
 
 crel is fast. Depending on what browser you use, it is up there with straight document.createElement calls.
