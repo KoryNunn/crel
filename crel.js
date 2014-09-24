@@ -48,7 +48,7 @@
         isType = function(a, type){
             return typeof a === type;
         },
-        isNode = isType(Node, fn) ? function (object) {
+        isNode = typeof Node === fn ? function (object) {
             return object instanceof Node;
         } :
         // in IE <= 8 Node is an object, obviously..
