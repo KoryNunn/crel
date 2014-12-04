@@ -9,9 +9,11 @@
   "main": "crel.js",
   "dependencies": {},
   "devDependencies": {
-    "tape": "2.0.x"
+    "smokestack": "^2.0.0",
+    "tape": "^3.0.3"
   },
   "scripts": {
+    "test": "browserify ./test | smokestack",
     "build": "browserify test/index.js > test/index.browser.js"
   },
   "repository": {
