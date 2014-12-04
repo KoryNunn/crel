@@ -45,6 +45,10 @@
 }(this, function () {
     var fn = 'function',
         obj = 'object',
+        textContent = 'textContent',
+        setAttribute = 'setAttribute',
+        attrMap = 'attrMap',
+        d = document,
         isType = function(a, type){
             return typeof a === type;
         },
@@ -66,7 +70,7 @@
         },
         appendChild = function(element, child) {
           if(!isNode(child)){
-              child = document.createTextNode(child);
+              child = d.createTextNode(child);
           }
           element.appendChild(child);
         };
@@ -79,9 +83,9 @@
             settings = args[1],
             childIndex = 2,
             argumentsLength = args.length,
-            attributeMap = crel.attrMap;
+            attributeMap = crel[attrMap];
 
-        element = crel.isElement(element) ? element : document.createElement(element);
+        element = crel.isElement(element) ? element : d.createElement(element);
         // shortcut
         if(argumentsLength === 1){
             return element;
@@ -93,8 +97,8 @@
         }
 
         // shortcut if there is only one child that is a string
-        if((argumentsLength - childIndex) === 1 && isType(args[childIndex], 'string') && element.textContent !== undefined){
-            element.textContent = args[childIndex];
+        if((argumentsLength - childIndex) === 1 && isType(args[childIndex], 'string') && element[textContent] !== undefined){
+            element[textContent] = args[childIndex];
         }else{
             for(; childIndex < argumentsLength; ++childIndex){
                 child = args[childIndex];
@@ -115,13 +119,13 @@
 
         for(var key in settings){
             if(!attributeMap[key]){
-                element.setAttribute(key, settings[key]);
+                element[setAttribute](key, settings[key]);
             }else{
-                var attr = crel.attrMap[key];
+                var attr = crel[attrMap][key];
                 if(typeof attr === fn){
                     attr(element, settings[key]);
                 }else{
-                    element.setAttribute(attr, settings[key]);
+                    element[setAttribute](attr, settings[key]);
                 }
             }
         }
@@ -131,7 +135,7 @@
 
     // Used for mapping one kind of attribute to the supported version of that in bad browsers.
     // String referenced so that compilers maintain the property name.
-    crel['attrMap'] = {};
+    crel[attrMap] = {};
 
     // String referenced so that compilers maintain the property name.
     crel["isElement"] = isElement;
