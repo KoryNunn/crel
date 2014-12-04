@@ -21,6 +21,13 @@ Signature:
 
     crel(tagName/dom element [, attributes, child1, child2, childN...])
 
+where `childN` may be
+
+ * a DOM element,
+ * a string, which will be inserted as a `textNode`,
+ * `null`, which will be ignored, or
+ * an `Array` containing any of the above
+
 For browserify:
 
     npm i crel
