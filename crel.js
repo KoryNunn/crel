@@ -48,7 +48,7 @@
         textContent = 'textContent',
         setAttribute = 'setAttribute',
         attrMap = 'attrMap',
-        d = document,
+        d = typeof document === 'object' ? document : {},
         isType = function(a, type){
             return typeof a === type;
         },
