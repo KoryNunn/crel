@@ -45,9 +45,13 @@
 }(this, function () {
     var fn = 'function',
         obj = 'object',
+        nodeType = 'nodeType',
+        textContent = 'textContent',
+        setAttribute = 'setAttribute',
         attrMapString = 'attrMap',
         isNodeString = 'isNode',
         isElementString = 'isElement',
+        d = typeof document === obj ? document : {},
         isType = function(a, type){
             return typeof a === type;
         },
@@ -58,18 +62,18 @@
         function(object){
             return object &&
                 isType(object, obj) &&
-                ('nodeType' in object) &&
+                (nodeType in object) &&
                 isType(object.ownerDocument,obj);
         },
         isElement = function (object) {
-            return crel[isNodeString](object) && object.nodeType === 1;
+            return crel[isNodeString](object) && object[nodeType] === 1;
         },
         isArray = function(a){
             return a instanceof Array;
         },
         appendChild = function(element, child) {
           if(!crel[isNodeString](child)){
-              child = document.createTextNode(child);
+              child = d.createTextNode(child);
           }
           element.appendChild(child);
         };
@@ -84,7 +88,7 @@
             argumentsLength = args.length,
             attributeMap = crel[attrMapString];
 
-        element = crel[isElementString](element) ? element : document.createElement(element);
+        element = crel[isElementString](element) ? element : d.createElement(element);
         // shortcut
         if(argumentsLength === 1){
             return element;
@@ -96,8 +100,8 @@
         }
 
         // shortcut if there is only one child that is a string
-        if((argumentsLength - childIndex) === 1 && isType(args[childIndex], 'string') && element.textContent !== undefined){
-            element.textContent = args[childIndex];
+        if((argumentsLength - childIndex) === 1 && isType(args[childIndex], 'string') && element[textContent] !== undefined){
+            element[textContent] = args[childIndex];
         }else{
             for(; childIndex < argumentsLength; ++childIndex){
                 child = args[childIndex];
@@ -118,13 +122,13 @@
 
         for(var key in settings){
             if(!attributeMap[key]){
-                element.setAttribute(key, settings[key]);
+                element[setAttribute](key, settings[key]);
             }else{
                 var attr = attributeMap[key];
                 if(typeof attr === fn){
                     attr(element, settings[key]);
                 }else{
-                    element.setAttribute(attr, settings[key]);
+                    element[setAttribute](attr, settings[key]);
                 }
             }
         }
