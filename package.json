@@ -9,10 +9,14 @@
   "main": "crel.js",
   "dependencies": {},
   "devDependencies": {
-    "tape": "2.0.x"
+    "double-tap": "^1.0.1",
+    "smokestack": "^3.0.0",
+    "tape": "2.0.x",
+    "uglify-js": "^2.4.16"
   },
   "scripts": {
-    "build": "browserify test/index.js > test/index.browser.js"
+    "test": "browserify test/index.js | double-tap smokestack",
+    "build": "uglifyjs crel.js -m -c > crel.min.js"
   },
   "repository": {
     "type": "git",

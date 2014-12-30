@@ -45,6 +45,9 @@
 }(this, function () {
     var fn = 'function',
         obj = 'object',
+        attrMapString = 'attrMap',
+        isNodeString = 'isNode',
+        isElementString = 'isElement',
         isType = function(a, type){
             return typeof a === type;
         },
@@ -59,13 +62,13 @@
                 isType(object.ownerDocument,obj);
         },
         isElement = function (object) {
-            return crel.isNode(object) && object.nodeType === 1;
+            return crel[isNodeString](object) && object.nodeType === 1;
         },
         isArray = function(a){
             return a instanceof Array;
         },
         appendChild = function(element, child) {
-          if(!isNode(child)){
+          if(!crel[isNodeString](child)){
               child = document.createTextNode(child);
           }
           element.appendChild(child);
@@ -79,15 +82,15 @@
             settings = args[1],
             childIndex = 2,
             argumentsLength = args.length,
-            attributeMap = crel.attrMap;
+            attributeMap = crel[attrMapString];
 
-        element = crel.isElement(element) ? element : document.createElement(element);
+        element = crel[isElementString](element) ? element : document.createElement(element);
         // shortcut
         if(argumentsLength === 1){
             return element;
         }
 
-        if(!isType(settings,obj) || crel.isNode(settings) || isArray(settings)) {
+        if(!isType(settings,obj) || crel[isNodeString](settings) || isArray(settings)) {
             --childIndex;
             settings = null;
         }
@@ -117,7 +120,7 @@
             if(!attributeMap[key]){
                 element.setAttribute(key, settings[key]);
             }else{
-                var attr = crel.attrMap[key];
+                var attr = attributeMap[key];
                 if(typeof attr === fn){
                     attr(element, settings[key]);
                 }else{
@@ -130,12 +133,11 @@
     }
 
     // Used for mapping one kind of attribute to the supported version of that in bad browsers.
-    // String referenced so that compilers maintain the property name.
-    crel['attrMap'] = {};
+    crel[attrMapString] = {};
 
-    // String referenced so that compilers maintain the property name.
-    crel["isElement"] = isElement;
-    crel["isNode"] = isNode;
+    crel[isElementString] = isElement;
+
+    crel[isNodeString] = isNode;
 
     return crel;
 }));
