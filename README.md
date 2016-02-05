@@ -19,7 +19,9 @@ Inspiration was taken from https://github.com/joestelmach/laconic, but crel wont
 
 Signature:
 
-    crel(tagName/dom element [, attributes, child1, child2, childN...])
+```javascript
+crel(tagName/dom element [, attributes, child1, child2, childN...])
+```
 
 where `childN` may be
 
@@ -30,13 +32,19 @@ where `childN` may be
 
 For browserify:
 
-    npm i crel
+```
+npm i crel
+```
 
-    var crel = require('crel');
+```javascript
+var crel = require('crel');
+```
 
 For standard script tag style:
 
+```html
     <script src="crel.min.js"></script>
+```
 
 To make some DOM:
 
@@ -84,6 +92,18 @@ crel(someDiv,
 ```
 
 But don't.
+
+# Proxy support
+
+If you are using crel in an environment that supports Proxies, you can also use the new API:
+
+```javascript
+var element = crel.div(
+    crel.h1('Crello World!'),
+    crel.p('This is crel'),
+    crel.input({type: 'number'})
+);
+```
 
 # Browser support
 
