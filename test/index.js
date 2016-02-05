@@ -119,3 +119,37 @@ test('pass a text node as the first child', function(t) {
 
     t.end();
 });
+
+if(typeof Proxy !== 'undefined'){
+
+    test('proxy API', function(t) {
+        t.plan(4);
+
+        var testElement = crel.div({class: 'foo'},
+                crel.span('bar')
+            );
+
+        t.equal(
+            testElement.className,
+            'foo'
+        );
+
+        t.equal(
+            testElement.childNodes.length,
+            1
+        );
+
+        t.equal(
+            testElement.childNodes[0].tagName,
+            'SPAN'
+        );
+
+        t.equal(
+            testElement.childNodes[0].textContent,
+            'bar'
+        );
+
+        t.end();
+    });
+
+}

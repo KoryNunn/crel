@@ -143,5 +143,14 @@
 
     crel[isNodeString] = isNode;
 
+    if(typeof Proxy !== 'undefined'){
+        return new Proxy(crel, {
+            get: function(target, key){
+                !(key in crel) && (crel[key] = crel.bind(null, key));
+                return crel[key];
+            }
+        });
+    }
+
     return crel;
 }));
