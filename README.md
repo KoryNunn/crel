@@ -107,7 +107,7 @@ var element = crel.div(
 
 # Browser support
 
-Crel works in everything (as far as I know), but ofcourse...
+Crel works in everything (as far as I know), but of course...
 
 ##  IE SUPPORT
 
