@@ -125,8 +125,10 @@ if(typeof Proxy !== 'undefined'){
     test('proxy API', function(t) {
         t.plan(4);
 
-        var testElement = crel.div({class: 'foo'},
-                crel.span('bar')
+        var proxyCrel = crel.proxy;
+
+        var testElement = proxyCrel.div({class: 'foo'},
+                proxyCrel.span('bar')
             );
 
         t.equal(

@@ -100,6 +100,8 @@ But don't.
 If you are using crel in an environment that supports Proxies, you can also use the new API:
 
 ```javascript
+var crel = require('crel').proxy;
+
 var element = crel.div(
     crel.h1('Crello World!'),
     crel.p('This is crel'),
