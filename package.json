@@ -25,5 +25,10 @@
     "url": "http://github.com/KoryNunn/crel/issues"
   },
   "license": "MIT",
-  "contributors": []
+  "contributors": [],
+  "homepage": "https://github.com/KoryNunn/crel#readme",
+  "directories": {
+    "test": "test"
+  },
+  "keywords": []
 }
