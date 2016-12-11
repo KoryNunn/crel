@@ -65,7 +65,7 @@ var element = crel('div',
 You can create attributes with dashes, or reserved keywords, but using strings for the objects keys:
 
 ```javascript
-crel('div', {'class':'thing', 'data-attrubute':'majigger'});
+crel('div', {'class':'thing', 'data-attribute':'majigger'});
 ```
 
 You can pass an already available element to crel, and it will be the target of the attributes/child elements
