@@ -120,6 +120,20 @@ test('pass a text node as the first child', function(t) {
     t.end();
 });
 
+test('onevent binding', function(t) {
+    t.plan(1);
+
+    var clickNode = crel('button', {
+        onclick: function(){
+            t.pass();
+        }
+    });
+
+    clickNode.click();
+
+    t.end();
+});
+
 if(typeof Proxy !== 'undefined'){
 
     test('proxy API', function(t) {
