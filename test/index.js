@@ -47,6 +47,32 @@ test('create div with a child', function(t) {
     t.end();
 });
 
+test('append array children', function(t) {
+    t.plan(1);
+
+    var testElement = crel('div', [1, 2, 3]);
+
+    t.equal(
+        testElement.childNodes.length,
+        3
+    );
+
+    t.end();
+});
+
+test('append deep array children', function(t) {
+    t.plan(1);
+
+    var testElement = crel('div', [[1, 2, 3]]);
+
+    t.equal(
+        testElement.childNodes.length,
+        3
+    );
+
+    t.end();
+});
+
 test('add attributes to an existing element', function(t) {
     t.plan(2);
 

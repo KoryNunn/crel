@@ -9,12 +9,14 @@
   "main": "crel.js",
   "dependencies": {},
   "devDependencies": {
-    "tape-run": "^2.1.3",
+    "browserify": "^14.4.0",
     "tape": "^3.0.3",
+    "tape-run": "^3.0.0",
     "uglify-js": "^2.4.16"
   },
   "scripts": {
-    "test": "browserify ./test | tape-run",
+    "test": "browserify ./test/index.js | tape-run",
+    "testBuild": "browserify ./test/index.js > ./test/index.browser.js",
     "build": "uglifyjs crel.js -m -c > crel.min.js"
   },
   "repository": {

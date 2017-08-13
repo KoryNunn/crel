@@ -72,10 +72,16 @@
             return a instanceof Array;
         },
         appendChild = function(element, child) {
-          if(!crel[isNodeString](child)){
-              child = d.createTextNode(child);
-          }
-          element.appendChild(child);
+            if (isArray(child)) {
+                child.map(function(subChild){
+                    appendChild(element, subChild);
+                });
+                return;
+            }
+            if(!crel[isNodeString](child)){
+                child = d.createTextNode(child);
+            }
+            element.appendChild(child);
         };
 
 
