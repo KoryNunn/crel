@@ -156,8 +156,12 @@
     if(typeof Proxy !== 'undefined'){
         crel.proxy = new Proxy(crel, {
             get: function(target, key){
-                !(key in crel) && (crel[key] = crel.bind(null, key));
-                return crel[key];
+                var nodeKey = key.replace(/([0-9a-z])([A-Z])/g, '$1-$2').toLowerCase();
+                var fn = crel[nodeKey];
+                if (!fn) {
+                    fn = crel[nodeKey] = crel.bind(null, nodeKey);
+                }
+                return fn;
             }
         });
     }
