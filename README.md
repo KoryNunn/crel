@@ -100,13 +100,25 @@ But don't.
 If you are using crel in an environment that supports Proxies, you can also use the new API:
 
 ```javascript
-var crel = require('crel').proxy;
+var crel = require('crel').createProxy();
 
 var element = crel.div(
     crel.h1('Crello World!'),
     crel.p('This is crel'),
     crel.input({type: 'number'})
 );
+```
+
+To allow for <dashes-in-tags>, you can optionally pass a keyTransform function to crel.createProxy():
+
+```javascript
+var crel = require('crel').createProxy(function(key){
+    return key.replace(/([0-9a-z])([A-Z])/g, '$1-$2').toLowerCase();
+});
+
+var element = crel.myElement();
+
+element.outerHTML === '<my-element></my-element>'
 ```
 
 # Browser support
