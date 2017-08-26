@@ -165,7 +165,7 @@ if(typeof Proxy !== 'undefined'){
     test('proxy API', function(t) {
         t.plan(4);
 
-        var proxyCrel = crel.proxy;
+        var proxyCrel = crel.createProxy();
 
         var testElement = proxyCrel.div({class: 'foo'},
                 proxyCrel.span('bar')
@@ -194,4 +194,34 @@ if(typeof Proxy !== 'undefined'){
         t.end();
     });
 
+    test('proxy API with key conversion', function(t) {
+        t.plan(4);
+
+        var proxyCrel = crel.createProxy(function(key){
+            return key.replace(/([0-9a-z])([A-Z])/g, '$1-$2').toLowerCase();
+        });
+        var testElement = proxyCrel.myTable(proxyCrel.span('bar'));
+
+        t.equal(
+            testElement.tagName,
+            'MY-TABLE'
+        );
+
+        t.equal(
+            testElement.childNodes.length,
+            1
+        );
+
+        t.equal(
+            testElement.childNodes[0].tagName,
+            'SPAN'
+        );
+
+        t.equal(
+            testElement.childNodes[0].textContent,
+            'bar'
+        );
+
+        t.end();
+    });
 }

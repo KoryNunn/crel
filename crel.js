@@ -153,13 +153,23 @@
 
     crel[isNodeString] = isNode;
 
-    if(typeof Proxy !== 'undefined'){
-        crel.proxy = new Proxy(crel, {
-            get: function(target, key){
-                !(key in crel) && (crel[key] = crel.bind(null, key));
-                return crel[key];
+    crel.createProxy = function(keyTransform){
+        if(typeof Proxy !== 'undefined'){
+            if(!keyTransform){
+                keyTransform = function(x){ return x };
             }
-        });
+
+            return new Proxy(crel, {
+                get: function(target, key){
+                    var nodeKey = keyTransform(key);
+                    var fn = crel[nodeKey];
+                    if (!fn) {
+                        fn = crel[nodeKey] = crel.bind(null, nodeKey);
+                    }
+                    return fn;
+                }
+            });
+        }
     }
 
     return crel;
