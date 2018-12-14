@@ -79,6 +79,23 @@ You can add attributes that have dashes or reserved keywords in the name, by usi
 crel('div', { 'class': 'thing', 'data-attribute': 'majigger' });
 ```
 
+You can define custom functionality for certain keys seen in the attributes
+object:
+
+```javascript
+crel.attrMap['on'] = function(element, value) {
+  for (var eventName in value) {
+    element.addEventListener(eventName, value[eventName]);
+  }
+};
+// Attaches an onClick event to the img element
+crel('img', { on: {
+  'click': function() {
+    console.log('Clicked');
+  }
+}});
+```
+
 You can pass already available elements to Crel to modify their attributes / add child elements to them
 
 ```javascript
