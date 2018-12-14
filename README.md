@@ -30,6 +30,15 @@ npm i crel
 var crel = require('crel');
 ```
 
+For AMD:
+
+```javascript
+require.config({paths: { crel: 'https://cdnjs.cloudflare.com/ajax/libs/crel/3.1.0/crel.min' }});
+require(['crel'], function(crel) {
+  // Your code
+});
+```
+
 For standard script tag style:
 
 ```html
