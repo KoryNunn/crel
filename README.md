@@ -3,38 +3,26 @@
 [![NPM version][npm-image]][npm-url]
 [![Downloads][downloads-image]][downloads-url]
 
-# What #
+# What
 
-a small, simple, and fast DOM creation utility
+A small, simple, and fast DOM creation utility
 
-# Why? #
+# Why
 
 Writing HTML is stupid. It's slow, messy, and should not be done in JavaScript.
 
-The best way to make DOM elements is via document.createElement, but making lots of DOM with it is tedious.
+The best way to make DOM elements is via `document.createElement`, but making lots of them with it is tedious.
 
-crel.js makes the process easier.
+Crel makes this process easier.
 
-Inspiration was taken from https://github.com/joestelmach/laconic, but crel wont screw with your bad in-DOM event listeners, and is smaller, faster, etc...
+Inspiration was taken from [laconic](https://github.com/joestelmach/laconic), but Crel wont screw with your bad in-DOM event listeners, and it's smaller,
+faster, etc...
 
-# Usage #
-
-Signature:
-
-```javascript
-crel(tagName/dom element [, attributes, child1, child2, childN...])
-```
-
-where `childN` may be
-
- * a DOM element,
- * a string, which will be inserted as a `textNode`,
- * `null`, which will be ignored, or
- * an `Array` containing any of the above
+# Installing
 
 For browserify:
 
-```
+```bash
 npm i crel
 ```
 
@@ -42,62 +30,98 @@ npm i crel
 var crel = require('crel');
 ```
 
+For AMD:
+
+```javascript
+require.config({paths: { crel: 'https://cdnjs.cloudflare.com/ajax/libs/crel/3.1.0/crel.min' }});
+require(['crel'], function(crel) {
+    // Your code
+});
+```
+
 For standard script tag style:
 
 ```html
-    <script src="crel.min.js"></script>
+<script src="crel.min.js"></script>
 ```
 
-To make some DOM:
+# Usage
 
-Example:
+Syntax:
+
+```javascript
+// Returns a DOM element
+crel(tagName / domElement, attributes, child1, child2, childN);
+```
+
+where `childN` may be:
+
+- a DOM element,
+- a string, which will be inserted as a `textNode`,
+- `null`, which will be ignored, or
+- an `Array` containing any of the above
+
+## Examples
 
 ```javascript
 var element = crel('div',
     crel('h1', 'Crello World!'),
     crel('p', 'This is crel'),
-    crel('input', {type: 'number'})
+    crel('input', { type: 'number' })
 );
 
 // Do something with 'element'
 ```
 
-You can create attributes with dashes, or reserved keywords, but using strings for the objects keys:
+You can add attributes that have dashes or reserved keywords in the name, by using strings for the objects keys:
 
 ```javascript
-crel('div', {'class':'thing', 'data-attribute':'majigger'});
+crel('div', { 'class': 'thing', 'data-attribute': 'majigger' });
 ```
 
-You can pass an already available element to crel, and it will be the target of the attributes/child elements
+You can define custom functionality for certain keys seen in the attributes
+object:
 
 ```javascript
-crel(document.body,
-    crel('h1', 'Page title')
-)
+crel.attrMap['on'] = function(element, value) {
+    for (var eventName in value) {
+        element.addEventListener(eventName, value[eventName]);
+    }
+};
+// Attaches an onClick event to the img element
+crel('img', { on: {
+    'click': function() {
+        console.log('Clicked');
+    }
+}});
+```
+
+You can pass already available elements to Crel to modify their attributes / add child elements to them
+
+```javascript
+crel(document.body, crel('h1', 'Page title'));
 ```
 
 You can assign child elements to variables during creation:
 
 ```javascript
 var button,
-    wrapper = crel('div',
-        button = crel('button')
-    );
+var wrapper = crel('div',
+    button  = crel('button')
+);
 ```
 
-You could probably use crel to rearrange existing dom..
+You could probably use Crel to rearrange existing DOM elements..
 
 ```javascript
-crel(someDiv,
-    crel(someOtherDiv, anotherOne)
-)
+crel(someDiv, crel(someOtherDiv, anotherOne));
 ```
 
-But don't.
+_But don't._
 
 # Proxy support
 
-If you are using crel in an environment that supports Proxies, you can also use the new API:
+If you are using Crel in an environment that supports Proxies, you can also use the new API:
 
 ```javascript
 var crel = require('crel').proxy;
@@ -105,50 +129,28 @@ var crel = require('crel').proxy;
 var element = crel.div(
     crel.h1('Crello World!'),
     crel.p('This is crel'),
-    crel.input({type: 'number'})
+    crel.input({ type: 'number' })
 );
 ```
 
 # Browser support
 
-Crel works in everything (as far as I know), but of course...
+Crel works in all browsers created in the last decade.
 
-##  IE SUPPORT
+# Goals
 
-If you require this library to work in IE7, add the following after declaring crel.
+### Easy to use & Tiny
 
-```javascript
-var testDiv = document.createElement('div'),
-    testLabel = document.createElement('label');
+Less than 1K minified, about 500 bytes gzipped === **Smal**
 
-testDiv.setAttribute('class', 'a');
-testDiv['className'] !== 'a' ? crel.attrMap['class'] = 'className':undefined;
-testDiv.setAttribute('name','a');
-testDiv['name'] !== 'a' ? crel.attrMap['name'] = function(element, value){
-    element.id = value;
-}:undefined;
+### Fast
 
+Crel is fast.
+Depending on what browser you use, it is up there with straight `document.createElement` calls: http://jsperf.com/dom-creation-libs/10
 
-testLabel.setAttribute('for', 'a');
-testLabel['htmlFor'] !== 'a' ? crel.attrMap['for'] = 'htmlFor':undefined;
-```
+# License
 
-# Goals #
-
-## Easy to use ##
-
-## Tiny ##
-less than 1K minified
-about 500 bytes gzipped
-## Fast ##
-
-crel is fast. Depending on what browser you use, it is up there with straight document.createElement calls.
-
-http://jsperf.com/dom-creation-libs/10
-
-# License #
-
-MIT
+**MIT**
 
 [npm-image]: https://img.shields.io/npm/v/crel.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/crel
