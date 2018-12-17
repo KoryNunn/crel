@@ -43,6 +43,7 @@ For standard script tag style:
 
 ```html
 <script src="crel.min.js"></script>
+
 ```
 
 # Usage
