@@ -35,7 +35,7 @@ For AMD:
 ```javascript
 require.config({paths: { crel: 'https://cdnjs.cloudflare.com/ajax/libs/crel/3.1.0/crel.min' }});
 require(['crel'], function(crel) {
-  // Your code
+    // Your code
 });
 ```
 
@@ -65,9 +65,9 @@ where `childN` may be:
 
 ```javascript
 var element = crel('div',
-  crel('h1', 'Crello World!'),
-  crel('p', 'This is crel'),
-  crel('input', { type: 'number' })
+    crel('h1', 'Crello World!'),
+    crel('p', 'This is crel'),
+    crel('input', { type: 'number' })
 );
 
 // Do something with 'element'
@@ -84,15 +84,15 @@ object:
 
 ```javascript
 crel.attrMap['on'] = function(element, value) {
-  for (var eventName in value) {
-    element.addEventListener(eventName, value[eventName]);
-  }
+    for (var eventName in value) {
+        element.addEventListener(eventName, value[eventName]);
+    }
 };
 // Attaches an onClick event to the img element
 crel('img', { on: {
-  'click': function() {
-    console.log('Clicked');
-  }
+    'click': function() {
+        console.log('Clicked');
+    }
 }});
 ```
 
@@ -105,9 +105,10 @@ crel(document.body, crel('h1', 'Page title'));
 You can assign child elements to variables during creation:
 
 ```javascript
-var button,
-  wrapper = crel('div',
-  button  = crel('button'));
+var button;
+var wrapper = crel('div',
+    button  = crel('button')
+);
 ```
 
 You could probably use Crel to rearrange existing DOM elements..
@@ -126,34 +127,15 @@ If you are using Crel in an environment that supports Proxies, you can also use 
 var crel = require('crel').proxy;
 
 var element = crel.div(
-  crel.h1('Crello World!'),
-  crel.p('This is crel'),
-  crel.input({ type: 'number' })
+    crel.h1('Crello World!'),
+    crel.p('This is crel'),
+    crel.input({ type: 'number' })
 );
 ```
 
 # Browser support
 
-Crel works in everything (as far as I know), but of course...
-
-## IE SUPPORT
-
-If you require Crel to work in IE7, add the following after declaring Crel.
-
-```javascript
-var testDiv = document.createElement('div'),
-  testLabel = document.createElement('label');
-
-testDiv.setAttribute('class', 'a');
-testDiv['className'] !== 'a' ? crel.attrMap['class'] = 'className' : undefined;
-testDiv.setAttribute('name', 'a');
-testDiv['name'] !== 'a' ? crel.attrMap['name'] = function(element, value) {
-  element.id = value;
-} : undefined;
-
-testLabel.setAttribute('for', 'a');
-testLabel['htmlFor'] !== 'a' ? crel.attrMap['for'] = 'htmlFor' : undefined;
-```
+Crel works in all browsers created in the last decade.
 
 # Goals
 
