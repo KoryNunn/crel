@@ -43,7 +43,6 @@ For standard script tag style:
 
 ```html
 <script src="crel.min.js"></script>
-
 ```
 
 # Usage
@@ -106,7 +105,7 @@ crel(document.body, crel('h1', 'Page title'));
 You can assign child elements to variables during creation:
 
 ```javascript
-var button,
+var button;
 var wrapper = crel('div',
     button  = crel('button')
 );
