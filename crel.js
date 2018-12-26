@@ -16,6 +16,10 @@ However, the code's intention should be transparent. */
     root.crel = factory();
   }
 }(this, function () {
+  // A helper function used throughout the script, so declare it early
+  var isType = function (a, type) {
+    return typeof a === type;
+  };
   var fn = 'function';
   var obj = 'object';
   var nodeType = 'nodeType';
@@ -24,11 +28,8 @@ However, the code's intention should be transparent. */
   var attrMapString = 'attrMap';
   var isNodeString = 'isNode';
   var isElementString = 'isElement';
-  var d = typeof document === obj ? document : {};
-  var isType = function (a, type) {
-    return typeof a === type;
-  };
-  var isNode = typeof Node === fn ? function (object) {
+  var d = isType(document, obj) ? document : {};
+  var isNode = isType(Node, fn) ? function (object) {
     return object instanceof Node;
   }
     // in IE <= 8 Node is an object, obviously..
@@ -110,7 +111,7 @@ However, the code's intention should be transparent. */
         }
       } else {
         var attr = attributeMap[key];
-        if (typeof attr === fn) {
+        if (isType(attr, fn)) {
           attr(element, settings[key]);
         } else {
           element[setAttribute](attr, settings[key]);
@@ -128,7 +129,7 @@ However, the code's intention should be transparent. */
 
   crel[isNodeString] = isNode;
 
-  if (typeof Proxy !== 'undefined') {
+  if (!isType(Proxy, 'undefined')) {
     crel.proxy = new Proxy(crel, {
       get: function (target, key) {
         !(key in crel) && (crel[key] = crel.bind(null, key));
