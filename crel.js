@@ -84,16 +84,14 @@ However, the code's intention should be transparent. */
       for (; childIndex < argumentsLength; ++childIndex) {
         child = args[childIndex];
 
-        if (child == null) {
-          continue;
-        }
-
-        if (isArray(child)) {
-          for (var i = 0; i < child.length; ++i) {
-            appendChild(element, child[i]);
+        if (child !== null) {
+          if (isArray(child)) {
+            for (var i = 0; i < child.length; ++i) {
+              appendChild(element, child[i]);
+            }
+          } else {
+            appendChild(element, child);
           }
-        } else {
-          appendChild(element, child);
         }
       }
     }
