@@ -27,6 +27,19 @@ test('Create a "div" element with a "class" attribute', function (t) {
   t.end();
 });
 
+test('Create a "div" element with a "style" attribute', function (t) {
+  t.plan(1);
+
+  var testElement = crel('div', {'style': {'color': 'red'}});
+
+  t.equal(
+    testElement.style.color,
+    'red'
+  );
+
+  t.end();
+});
+
 test('Create a "div" element with a child element', function (t) {
   t.plan(2);
 

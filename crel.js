@@ -102,6 +102,11 @@ However, the code's intention should be transparent. */
       if (!attributeMap[key]) {
         if (isType(settings[key], fn)) {
           element[key] = settings[key];
+        } else if (isType(settings[key], obj)) {
+          // We only check and allow for one level of object depth
+          for (var value in settings[key]) {
+            element[key][value] = settings[key][value];
+          }
         } else {
           element[setAttribute](key, settings[key]);
         }
