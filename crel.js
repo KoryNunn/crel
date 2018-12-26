@@ -59,48 +59,37 @@ However, the code's intention should be transparent. */
   };
 
   function crel () {
-    var args = arguments; // Note: assigned to a variable to assist compilers. Saves about 40 bytes in closure compiler. Has negligable effect on performance.
+    var args = arguments; // Note: assigned to a variable to assist compilers.
     var element = args[0];
-    var attributeMap = crel[attrMapString];
+    var attrMap = crel[attrMapString];
 
     element = crel[isElementString](element) ? element : d.createElement(element);
 
     var processAttributes = function (settings) {
       for (var key in settings) {
-        if (!attributeMap[key]) {
-          if (isType(settings[key], fn)) {
-            element[key] = settings[key];
-          } else if (isType(settings[key], obj)) {
-            // We only check and allow for one level of object depth
-            for (var value in settings[key]) {
-              element[key][value] = settings[key][value];
-            }
-          } else {
-            element[setAttribute](key, settings[key]);
+        key = attrMap[key] ? attrMap[key] : key;
+        if (isType(key, fn)) {
+          key(element, settings[key]);
+        } else if (isType(settings[key], fn)) {
+          element[key] = settings[key];
+        } else if (isType(settings[key], obj)) {
+          // We only check and allow for one level of object depth
+          for (var value in settings[key]) {
+            element[key][value] = settings[key][value];
           }
         } else {
-          var attr = attributeMap[key];
-          if (isType(attr, fn)) {
-            attr(element, settings[key]);
-          } else {
-            element[setAttribute](attr, settings[key]);
-          }
+          element[setAttribute](key, settings[key]);
         }
       }
     };
 
-    // crel('div', {'class': 'thing'})
     var processArgs = function (arg) {
-      if (isArray(arg)) {
-        appendChild(element, arg);
-      } else if (isType(arg, obj)) {
-        if (crel[isElementString](arg) || isNode(arg)) {
-          appendChild(element, arg);
-        } else {
-          processAttributes(arg);
-        }
-      } else if (element[textContent] !== undefined) {
+      if (isType(arg, 'string')) {
         element[textContent] = arg;
+      } else if (isArray(arg) || isNode(arg) || crel[isElementString](arg)) {
+        appendChild(element, arg);
+      } else {
+        processAttributes(arg);
       }
     };
 
