@@ -61,62 +61,51 @@ However, the code's intention should be transparent. */
   function crel () {
     var args = arguments; // Note: assigned to a variable to assist compilers. Saves about 40 bytes in closure compiler. Has negligable effect on performance.
     var element = args[0];
-    var child;
-    var settings = args[1];
-    var childIndex = 2;
-    var argumentsLength = args.length;
     var attributeMap = crel[attrMapString];
 
     element = crel[isElementString](element) ? element : d.createElement(element);
-    // shortcut
-    if (argumentsLength === 1) {
-      return element;
-    }
 
-    if (!isType(settings, obj) || crel[isNodeString](settings) || isArray(settings)) {
-      --childIndex;
-      settings = null;
-    }
-
-    // shortcut if there is only one child that is a string
-    if ((argumentsLength - childIndex) === 1 && isType(args[childIndex], 'string') && element[textContent] !== undefined) {
-      element[textContent] = args[childIndex];
-    } else {
-      for (; childIndex < argumentsLength; ++childIndex) {
-        child = args[childIndex];
-
-        if (child !== null) {
-          if (isArray(child)) {
-            for (var i = 0; i < child.length; ++i) {
-              appendChild(element, child[i]);
+    var processAttributes = function (settings) {
+      for (var key in settings) {
+        if (!attributeMap[key]) {
+          if (isType(settings[key], fn)) {
+            element[key] = settings[key];
+          } else if (isType(settings[key], obj)) {
+            // We only check and allow for one level of object depth
+            for (var value in settings[key]) {
+              element[key][value] = settings[key][value];
             }
           } else {
-            appendChild(element, child);
+            element[setAttribute](key, settings[key]);
+          }
+        } else {
+          var attr = attributeMap[key];
+          if (isType(attr, fn)) {
+            attr(element, settings[key]);
+          } else {
+            element[setAttribute](attr, settings[key]);
           }
         }
       }
-    }
+    };
 
-    for (var key in settings) {
-      if (!attributeMap[key]) {
-        if (isType(settings[key], fn)) {
-          element[key] = settings[key];
-        } else if (isType(settings[key], obj)) {
-          // We only check and allow for one level of object depth
-          for (var value in settings[key]) {
-            element[key][value] = settings[key][value];
-          }
+    // crel('div', {'class': 'thing'})
+    var processArgs = function (arg) {
+      if (isArray(arg)) {
+        appendChild(element, arg);
+      } else if (isType(arg, obj)) {
+        if (crel[isElementString](arg) || isNode(arg)) {
+          appendChild(element, arg);
         } else {
-          element[setAttribute](key, settings[key]);
+          processAttributes(arg);
         }
-      } else {
-        var attr = attributeMap[key];
-        if (isType(attr, fn)) {
-          attr(element, settings[key]);
-        } else {
-          element[setAttribute](attr, settings[key]);
-        }
+      } else if (element[textContent] !== undefined) {
+        element[textContent] = arg;
       }
+    };
+
+    for (var i = 1; i < args.length; i++) {
+      processArgs(args[i]);
     }
 
     return element;
