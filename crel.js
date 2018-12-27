@@ -12,26 +12,6 @@
 
     However, the code's intention should be transparent.
 
-    *** IE SUPPORT ***
-
-    If you require this library to work in IE7, add the following after declaring crel.
-
-    var testDiv = document.createElement('div'),
-        testLabel = document.createElement('label');
-
-    testDiv.setAttribute('class', 'a');
-    testDiv['className'] !== 'a' ? crel.attrMap['class'] = 'className':undefined;
-    testDiv.setAttribute('name','a');
-    testDiv['name'] !== 'a' ? crel.attrMap['name'] = function(element, value){
-        element.id = value;
-    }:undefined;
-
-
-    testLabel.setAttribute('for', 'a');
-    testLabel['htmlFor'] !== 'a' ? crel.attrMap['for'] = 'htmlFor':undefined;
-
-
-
 */
 
 (function (root, factory) {
@@ -49,21 +29,13 @@
         fn = 'function',
         obj = 'object',
         nodeType = 'nodeType',
-        textContent = 'textContent',
         setAttribute = 'setAttribute',
         attrMapString = 'attrMap',
         isNodeString = 'isNode',
         isElementString = 'isElement',
-        d = isType(document, obj) ? document : {},
-        isNode = isType(Node, fn) ? function (object) {
+        d = document,
+        isNode = function (object) {
             return object instanceof Node;
-        } :
-        // in IE <= 8 Node is an object, obviously..
-        function(object){
-            return object &&
-                isType(object, obj) &&
-                (nodeType in object) &&
-                isType(object.ownerDocument,obj);
         },
         isElement = function (object) {
             return crel[isNodeString](object) && object[nodeType] === 1;
@@ -103,8 +75,8 @@
         }
 
         // shortcut if there is only one child that is a string
-        if((argumentsLength - childIndex) === 1 && isType(args[childIndex], 'string') && element[textContent] !== undefined){
-            element[textContent] = args[childIndex];
+        if((argumentsLength - childIndex) === 1 && isType(args[childIndex], 'string')){
+            element.textContent = args[childIndex];
         }else{
             for(; childIndex < argumentsLength; ++childIndex){
                 child = args[childIndex];
