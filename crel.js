@@ -113,13 +113,7 @@
                 child = args[childIndex];
 
                 if(child !== null){
-                    if (isArray(child)) {
-                      for (var i=0; i < child.length; ++i) {
-                        appendChild(element, child[i]);
-                      }
-                    } else {
-                      appendChild(element, child);
-                    }
+                    appendChild(element, child);
                 }
             }
         }
