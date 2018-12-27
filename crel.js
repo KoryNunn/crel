@@ -65,41 +65,39 @@
 
         element = crel[isElementString](element) ? element : d.createElement(element);
         // shortcut
-        if(argumentsLength === 1){
-            return element;
-        }
+        if(argumentsLength > 1){
+            if(!isType(settings,obj) || crel[isNodeString](settings) || Array.isArray(settings)) {
+                --childIndex;
+                settings = null;
+            }
 
-        if(!isType(settings,obj) || crel[isNodeString](settings) || Array.isArray(settings)) {
-            --childIndex;
-            settings = null;
-        }
+            // shortcut if there is only one child that is a string
+            if((argumentsLength - childIndex) === 1 && isType(args[childIndex], 'string')){
+                element.textContent = args[childIndex];
+            }else{
+                for(; childIndex < argumentsLength; ++childIndex){
+                    child = args[childIndex];
 
-        // shortcut if there is only one child that is a string
-        if((argumentsLength - childIndex) === 1 && isType(args[childIndex], 'string')){
-            element.textContent = args[childIndex];
-        }else{
-            for(; childIndex < argumentsLength; ++childIndex){
-                child = args[childIndex];
-
-                if(child !== null){
-                    appendChild(element, child);
+                    if(child !== null){
+                        appendChild(element, child);
+                    }
                 }
             }
-        }
 
-        for(var key in settings){
-            if(!attributeMap[key]){
-                if(isType(settings[key],fn)){
-                    element[key] = settings[key];
+            for(var key in settings){
+                if(!attributeMap[key]){
+                    if(isType(settings[key],fn)){
+                        element[key] = settings[key];
+                    }else{
+                        element[setAttribute](key, settings[key]);
+                    }
                 }else{
-                    element[setAttribute](key, settings[key]);
-                }
-            }else{
-                var attr = attributeMap[key];
-                if(isType(attr, fn)){
-                    attr(element, settings[key]);
-                }else{
-                    element[setAttribute](attr, settings[key]);
+                    var attr = attributeMap[key];
+                    if(isType(attr, fn)){
+                        attr(element, settings[key]);
+                    }else{
+                        element[setAttribute](attr, settings[key]);
+                    }
                 }
             }
         }
