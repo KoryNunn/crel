@@ -68,11 +68,8 @@
         isElement = function (object) {
             return crel[isNodeString](object) && object[nodeType] === 1;
         },
-        isArray = function(a){
-            return a instanceof Array;
-        },
         appendChild = function(element, child) {
-            if (isArray(child)) {
+            if (Array.isArray(child)) {
                 child.map(function(subChild){
                     appendChild(element, subChild);
                 });
@@ -100,7 +97,7 @@
             return element;
         }
 
-        if(!isType(settings,obj) || crel[isNodeString](settings) || isArray(settings)) {
+        if(!isType(settings,obj) || crel[isNodeString](settings) || Array.isArray(settings)) {
             --childIndex;
             settings = null;
         }
