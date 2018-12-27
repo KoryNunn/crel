@@ -73,14 +73,29 @@ let element = crel('div',
 // Do something with 'element'
 ```
 
+You can change the `properties` of elements, without creating an attribute
+
+```javascript
+var element = crel('p', 'This is crel');
+crel(element, {'textContent': 'This is still crel'});
+
+element.getAttribute('textContent'); // null
+```
+**NOTE:** If the key name in the settings object matches an existing DOM property, the value will _alwaysbe set_ to that property
+
+You can change the style of elements:
+
+```javascript
+crel('div', { 'style': {'color': 'red'} });
+```
+
 You can add attributes that have dashes or reserved keywords in the name, by using strings for the objects keys:
 
 ```javascript
 crel('div', { 'class': 'thing', 'data-attribute': 'majigger' });
 ```
 
-You can define custom functionality for certain keys seen in the attributes
-object:
+You can define custom functionality for certain keys seen in the attributes object:
 
 ```javascript
 crel.attrMap['on'] = (element, value) => {
