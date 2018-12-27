@@ -43,7 +43,10 @@
         root.crel = factory();
     }
 }(this, function () {
-    var fn = 'function',
+    var isType = function(a, type){ // A helper function used throughout the script, so declare it early
+            return typeof a === type;
+        },
+        fn = 'function',
         obj = 'object',
         nodeType = 'nodeType',
         textContent = 'textContent',
@@ -51,11 +54,8 @@
         attrMapString = 'attrMap',
         isNodeString = 'isNode',
         isElementString = 'isElement',
-        d = typeof document === obj ? document : {},
-        isType = function(a, type){
-            return typeof a === type;
-        },
-        isNode = typeof Node === fn ? function (object) {
+        d = isType(document, obj) ? document : {},
+        isNode = isType(Node, fn) ? function (object) {
             return object instanceof Node;
         } :
         // in IE <= 8 Node is an object, obviously..
@@ -127,7 +127,7 @@
                 }
             }else{
                 var attr = attributeMap[key];
-                if(typeof attr === fn){
+                if(isType(attr, fn)){
                     attr(element, settings[key]);
                 }else{
                     element[setAttribute](attr, settings[key]);
@@ -145,7 +145,7 @@
 
     crel[isNodeString] = isNode;
 
-    if(typeof Proxy !== 'undefined'){
+    if(!isType(Proxy, 'undefined')){
         crel.proxy = new Proxy(crel, {
             get: function(target, key){
                 !(key in crel) && (crel[key] = crel.bind(null, key));
