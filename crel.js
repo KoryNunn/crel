@@ -28,7 +28,6 @@
         },
         fn = 'function',
         obj = 'object',
-        nodeType = 'nodeType',
         setAttribute = 'setAttribute',
         attrMapString = 'attrMap',
         isNodeString = 'isNode',
@@ -38,7 +37,7 @@
             return object instanceof Node;
         },
         isElement = function (object) {
-            return crel[isNodeString](object) && object[nodeType] === 1;
+            return object instanceof Element;
         },
         appendChild = function(element, child) {
             if (Array.isArray(child)) {
