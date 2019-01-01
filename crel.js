@@ -53,9 +53,8 @@
         };
 
 
-    function crel(){
+    function crel(element){
         var args = arguments, //Note: assigned to a variable to assist compilers. Saves about 40 bytes in closure compiler. Has negligable effect on performance.
-            element = args[0],
             child,
             settings = args[1],
             childIndex = 2,
