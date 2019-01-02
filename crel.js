@@ -23,16 +23,16 @@
         root.crel = factory();
     }
 }(this, function () {
-    var isType = function(object, type){ // A helper function used throughout the script, so declare it early
-            return typeof object === type;
-        },
-        func = 'function',
+    var func = 'function',
         obj = 'object',
         setAttribute = 'setAttribute',
         attrMapString = 'attrMap',
         isNodeString = 'isNode',
         isElementString = 'isElement',
         d = document,
+        isType = function(object, type){
+            return typeof object === type;
+        },
         isNode = function (node) {
             return node instanceof Node;
         },
@@ -83,18 +83,18 @@
             }
 
             for(var key in settings){
-                if(!attributeMap[key]){
-                    if(isType(settings[key],func)){
-                        element[key] = settings[key];
-                    }else{
-                        element[setAttribute](key, settings[key]);
-                    }
-                }else{
+                if(attributeMap[key]){
                     var attrKey = attributeMap[key];
                     if(isType(attrKey, func)){
                         attrKey(element, settings[key]);
                     }else{
                         element[setAttribute](attrKey, settings[key]);
+                    }
+                }else{
+                    if(isType(settings[key],func)){
+                        element[key] = settings[key];
+                    }else{
+                        element[setAttribute](key, settings[key]);
                     }
                 }
             }
