@@ -45,51 +45,43 @@ This might make it harder to read at times, but the code's intention should be t
             element.appendChild(child);
         };
     //
-    function crel (element) {
+    function crel (element, settings) {
         // Define all used variables / shortcuts here, to make things smaller once compiled
-        var args = arguments, // Note: assigned to a variable to assist compilers. Saves about 40 bytes in closure compiler. Has negligable effect on performance.
+        var args = arguments, // Note: assigned to a variable to assist compilers.
             argumentsLength = args.length,
-            settings = args[1],
-            currentIndex = 2,
-            child,
+            index = 1,
             attributeMap = crel[attrMapString];
         // If first argument is an element, use it as is, otherwise treat it as a tagname
         element = crel[isElementString](element) ? element : d.createElement(element);
-        // Skip unnecessary checks if there are no additional arguments
+        // Skip unnecessary logic if there are no additional arguments
         if (argumentsLength > 1) {
-            // Check if settings is an attribute object, and if not include it in our loop bellow
-            if (!isType(settings, obj) || crel[isNodeString](settings) || Array.isArray(settings)) {
-                currentIndex--;
-                settings = null;
-            }
-            // Shortcut if there is only one child that is a string
-            if ((argumentsLength - currentIndex) === 1 && isType(args[currentIndex], 'string')) {
-                element.textContent = args[currentIndex];
-            } else {
-                // Loop through all remaining arguments and append them to our element
-                for (; currentIndex < argumentsLength; currentIndex++) {
-                    child = args[currentIndex];
-                    // Ignore null arguments
-                    if (child !== null) {
-                        appendChild(element, child);
+            // Check if second argument is a settings object. Skip it if it's:
+            // - not an object
+            // - a Node
+            // - an array
+            if (!(!isType(settings, obj) || crel[isNodeString](settings) || Array.isArray(settings))) {
+                // Don't treat settings as a child
+                index++;
+                // Go through settings / attributes object, if it exists
+                for (var key in settings) {
+                    // Store the attribute into a variable, before we potentially modify the key
+                    var attribute = settings[key];
+                    // Get mapped key / function, if one exists
+                    key = attributeMap[key] || key;
+                    // Note: We want to prioritise mapping over properties
+                    if (isType(key, func)) {
+                        key(element, attribute);
+                    } else if (isType(attribute, func)) { // ex. onClick property
+                        element[key] = attribute;
+                    } else {
+                        // Set the element attribute
+                        element[setAttribute](key, attribute);
                     }
                 }
             }
-            // Go through settings / attributes object, if it exists
-            for (var key in settings) {
-                // Store the attribute into a variable, before we potentially modify the key
-                var attribute = settings[key];
-                // Get mapped key / function, if one exists
-                key = attributeMap[key] || key;
-                // Note: We want to prioritise mapping over properties
-                if (isType(key, func)) {
-                    key(element, attribute);
-                } else if (isType(attribute, func)) { // ex. onClick property
-                    element[key] = attribute;
-                } else {
-                    // Set the element attribute
-                    element[setAttribute](key, attribute);
-                }
+            // Loop through all arguments and append them to our element if they're not `null`
+            for (; index < argumentsLength; index++) {
+                args[index] !== null && appendChild(element, args[index]);
             }
         }
 
