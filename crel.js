@@ -28,7 +28,6 @@
         },
         fn = 'function',
         obj = 'object',
-        nodeType = 'nodeType',
         setAttribute = 'setAttribute',
         attrMapString = 'attrMap',
         isNodeString = 'isNode',
@@ -38,7 +37,7 @@
             return object instanceof Node;
         },
         isElement = function (object) {
-            return crel[isNodeString](object) && object[nodeType] === 1;
+            return object instanceof Element;
         },
         appendChild = function(element, child) {
             if (Array.isArray(child)) {
@@ -54,9 +53,8 @@
         };
 
 
-    function crel(){
+    function crel(element){
         var args = arguments, //Note: assigned to a variable to assist compilers. Saves about 40 bytes in closure compiler. Has negligable effect on performance.
-            element = args[0],
             child,
             settings = args[1],
             childIndex = 2,
