@@ -23,21 +23,21 @@
         root.crel = factory();
     }
 }(this, function () {
-    var isType = function(a, type){ // A helper function used throughout the script, so declare it early
-            return typeof a === type;
+    var isType = function(object, type){ // A helper function used throughout the script, so declare it early
+            return typeof object === type;
         },
-        fn = 'function',
+        func = 'function',
         obj = 'object',
         setAttribute = 'setAttribute',
         attrMapString = 'attrMap',
         isNodeString = 'isNode',
         isElementString = 'isElement',
         d = document,
-        isNode = function (object) {
-            return object instanceof Node;
+        isNode = function (node) {
+            return node instanceof Node;
         },
-        isElement = function (object) {
-            return object instanceof Element;
+        isElement = function (element) {
+            return element instanceof Element;
         },
         appendChild = function(element, child) {
             if (Array.isArray(child)) {
@@ -55,26 +55,26 @@
 
     function crel(element){
         var args = arguments, //Note: assigned to a variable to assist compilers. Saves about 40 bytes in closure compiler. Has negligable effect on performance.
-            child,
-            settings = args[1],
-            childIndex = 2,
             argumentsLength = args.length,
+            settings = args[1],
+            currentIndex = 2,
+            child,
             attributeMap = crel[attrMapString];
 
         element = crel[isElementString](element) ? element : d.createElement(element);
         // shortcut
         if(argumentsLength > 1){
             if(!isType(settings,obj) || crel[isNodeString](settings) || Array.isArray(settings)) {
-                --childIndex;
+                currentIndex--;
                 settings = null;
             }
 
             // shortcut if there is only one child that is a string
-            if((argumentsLength - childIndex) === 1 && isType(args[childIndex], 'string')){
-                element.textContent = args[childIndex];
+            if((argumentsLength - currentIndex) === 1 && isType(args[currentIndex], 'string')){
+                element.textContent = args[currentIndex];
             }else{
-                for(; childIndex < argumentsLength; ++childIndex){
-                    child = args[childIndex];
+                for(; currentIndex < argumentsLength; currentIndex++){
+                    child = args[currentIndex];
 
                     if(child !== null){
                         appendChild(element, child);
@@ -84,17 +84,17 @@
 
             for(var key in settings){
                 if(!attributeMap[key]){
-                    if(isType(settings[key],fn)){
+                    if(isType(settings[key],func)){
                         element[key] = settings[key];
                     }else{
                         element[setAttribute](key, settings[key]);
                     }
                 }else{
-                    var attr = attributeMap[key];
-                    if(isType(attr, fn)){
-                        attr(element, settings[key]);
+                    var attrKey = attributeMap[key];
+                    if(isType(attrKey, func)){
+                        attrKey(element, settings[key]);
                     }else{
-                        element[setAttribute](attr, settings[key]);
+                        element[setAttribute](attrKey, settings[key]);
                     }
                 }
             }
