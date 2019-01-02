@@ -3,11 +3,13 @@
     <head>
         <script type="text/javascript">
             var originalLog = console.log;
-            console.log = function(){
-                originalLog.apply(this, arguments);
-                document.write(Array.from(arguments).join(' ') + '<br />');
+            console.log = function () {
+                originalLog.apply(console, arguments);
+                document.body.appendChild(document.createTextNode(Array.from(arguments).join(' ')));
+                document.body.innerHTML += '<br>';
             };
         </script>
         <script src="index.browser.js"></script>
     </head>
+    <body></body>
 </html>
