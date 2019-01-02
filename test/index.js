@@ -1,7 +1,7 @@
 var crel = require('../'),
     test = require('tape');
 
-test('create div', function (t) {
+test('Create an element with no arguments', function (t) {
     t.plan(1);
 
     var testElement = crel('div');
@@ -11,7 +11,7 @@ test('create div', function (t) {
     t.end();
 });
 
-test('create div with a class', function (t) {
+test('Create an element with simple attributes', function (t) {
     t.plan(1);
 
     var testElement = crel('div', {'class': 'test'});
@@ -21,7 +21,7 @@ test('create div with a class', function (t) {
     t.end();
 });
 
-test('create div with a child', function (t) {
+test('Create an element with a child element', function (t) {
     t.plan(2);
 
     var testElement = crel('div', crel('span'));
@@ -32,7 +32,7 @@ test('create div with a child', function (t) {
     t.end();
 });
 
-test('append array children', function (t) {
+test('Create an element with an array of children', function (t) {
     t.plan(1);
 
     var testElement = crel('div', [1, 2, 3]);
@@ -42,7 +42,7 @@ test('append array children', function (t) {
     t.end();
 });
 
-test('append deep array children', function (t) {
+test('Create an element with a deep array of children', function (t) {
     t.plan(1);
 
     var testElement = crel('div', [[1, 2, 3]]);
@@ -52,7 +52,7 @@ test('append deep array children', function (t) {
     t.end();
 });
 
-test('add attributes to an existing element', function (t) {
+test('Add attributes to an already existing element', function (t) {
     t.plan(2);
 
     var testElement = document.createElement('div');
@@ -64,7 +64,7 @@ test('add attributes to an existing element', function (t) {
     t.end();
 });
 
-test('isElement', function (t) {
+test('Test that `isELement` is defined and works', function (t) {
     t.plan(2);
 
     var testElement = document.createElement('div');
@@ -83,7 +83,7 @@ test('isElement', function (t) {
     t.end();
 });
 
-test('isNode', function (t) {
+test('Test that `isNode` is defined and works', function (t) {
     t.plan(2);
 
     var testElement = document.createElement('div');
@@ -91,18 +91,18 @@ test('isNode', function (t) {
 
     t.ok(
         crel.isNode(testElement),
-        'a <div> is an element'
+        'a <div> is a node'
     );
 
     t.ok(
         crel.isNode(testNode),
-        'a textNode is not an element'
+        'a textNode is a node'
     );
 
     t.end();
 });
 
-test('pass a text node as the first child', function (t) {
+test('Create an element with a child text node', function (t) {
     t.plan(1);
 
     var testElement = crel('div', document.createTextNode('test'));
@@ -112,12 +112,12 @@ test('pass a text node as the first child', function (t) {
     t.end();
 });
 
-test('onevent binding', function (t) {
+test('Add an `onEvent` property to an element', function (t) {
     t.plan(1);
 
     var testElement = crel('button', {
         onclick: function () {
-            t.pass();
+            t.pass('onClick event triggered');
         }
     });
 
@@ -127,7 +127,7 @@ test('onevent binding', function (t) {
 });
 
 if (typeof Proxy !== 'undefined') {
-    test('proxy API', function (t) {
+    test('Test that the Proxy API is defined and works', function (t) {
         t.plan(4);
 
         var proxyCrel = crel.proxy;
