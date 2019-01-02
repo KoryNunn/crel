@@ -30,7 +30,7 @@ This might make it harder to read at times, but the code's intentiona should be 
         isElementString = 'isElement',
         d = document,
         // Helper functions used throughout the script
-        isType = function(object, type){
+        isType = function (object, type) {
             return typeof object === type;
         },
         isNode = function (node) {
@@ -40,22 +40,22 @@ This might make it harder to read at times, but the code's intentiona should be 
             return element instanceof Element;
         },
         // Recursively appends children to given element. As a text node if not already an element
-        appendChild = function(element, child) {
+        appendChild = function (element, child) {
             if (Array.isArray(child)) { // Support (deeply) nested child elements
-                child.map(function(subChild){
+                child.map(function (subChild) {
                     appendChild(element, subChild);
                 });
                 return;
             }
-            if(!crel[isNodeString](child)){
+            if (!crel[isNodeString](child)) {
                 child = d.createTextNode(child);
             }
             element.appendChild(child);
         };
     //
-    function crel(element){
+    function crel (element) {
         // Define all used variables / shortcuts here, to make things smaller once compiled
-        var args = arguments, //Note: assigned to a variable to assist compilers. Saves about 40 bytes in closure compiler. Has negligable effect on performance.
+        var args = arguments, // Note: assigned to a variable to assist compilers. Saves about 40 bytes in closure compiler. Has negligable effect on performance.
             argumentsLength = args.length,
             settings = args[1],
             currentIndex = 2,
@@ -64,41 +64,41 @@ This might make it harder to read at times, but the code's intentiona should be 
         // If first argument is an element, use it as is, otherwise treat it as a tagname
         element = crel[isElementString](element) ? element : d.createElement(element);
         // Skip unnecessary checks if there are no additional arguments
-        if(argumentsLength > 1){
+        if (argumentsLength > 1) {
             // Check if settings is an attribute object, and if not include it in our loop bellow
-            if(!isType(settings,obj) || crel[isNodeString](settings) || Array.isArray(settings)) {
+            if (!isType(settings, obj) || crel[isNodeString](settings) || Array.isArray(settings)) {
                 currentIndex--;
                 settings = null;
             }
             // Shortcut if there is only one child that is a string
-            if((argumentsLength - currentIndex) === 1 && isType(args[currentIndex], 'string')){
+            if ((argumentsLength - currentIndex) === 1 && isType(args[currentIndex], 'string')) {
                 element.textContent = args[currentIndex];
-            }else{
+            } else {
                 // Loop through all remaining arguments and append them to our element
-                for(; currentIndex < argumentsLength; currentIndex++){
+                for (; currentIndex < argumentsLength; currentIndex++) {
                     child = args[currentIndex];
                     // Ignore null arguments
-                    if(child !== null){
+                    if (child !== null) {
                         appendChild(element, child);
                     }
                 }
             }
             // Go through settings / attributes object, if it exists
-            for(var key in settings){
+            for (var key in settings) {
                 // Check for any defined custom functionality for key
-                if(attributeMap[key]){
+                if (attributeMap[key]) {
                     var attrKey = attributeMap[key];
                     // Check if mapping to another attribute name, or to a custom function
-                    if(isType(attrKey, func)){
+                    if (isType(attrKey, func)) {
                         attrKey(element, settings[key]);
-                    }else{
+                    } else {
                         // Set the element attribute using our new key
                         element[setAttribute](attrKey, settings[key]);
                     }
-                }else{
-                    if(isType(settings[key],func)){ // ex. onClick property
+                } else {
+                    if (isType(settings[key], func)) { // ex. onClick property
                         element[key] = settings[key];
-                    }else{
+                    } else {
                         // Set the element attribute
                         element[setAttribute](key, settings[key]);
                     }
@@ -114,9 +114,9 @@ This might make it harder to read at times, but the code's intentiona should be 
     crel[isElementString] = isElement;
     crel[isNodeString] = isNode;
     // Expose proxy interface, if supported
-    if(!isType(Proxy, 'undefined')){
+    if (!isType(Proxy, 'undefined')) {
         crel.proxy = new Proxy(crel, {
-            get: function(target, key){
+            get: function (target, key) {
                 !(key in crel) && (crel[key] = crel.bind(null, key));
                 return crel[key];
             }
