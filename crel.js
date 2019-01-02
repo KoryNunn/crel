@@ -12,26 +12,6 @@
 
     However, the code's intention should be transparent.
 
-    *** IE SUPPORT ***
-
-    If you require this library to work in IE7, add the following after declaring crel.
-
-    var testDiv = document.createElement('div'),
-        testLabel = document.createElement('label');
-
-    testDiv.setAttribute('class', 'a');
-    testDiv['className'] !== 'a' ? crel.attrMap['class'] = 'className':undefined;
-    testDiv.setAttribute('name','a');
-    testDiv['name'] !== 'a' ? crel.attrMap['name'] = function(element, value){
-        element.id = value;
-    }:undefined;
-
-
-    testLabel.setAttribute('for', 'a');
-    testLabel['htmlFor'] !== 'a' ? crel.attrMap['for'] = 'htmlFor':undefined;
-
-
-
 */
 
 (function (root, factory) {
@@ -43,36 +23,25 @@
         root.crel = factory();
     }
 }(this, function () {
-    var fn = 'function',
+    var isType = function(a, type){ // A helper function used throughout the script, so declare it early
+            return typeof a === type;
+        },
+        fn = 'function',
         obj = 'object',
         nodeType = 'nodeType',
-        textContent = 'textContent',
         setAttribute = 'setAttribute',
         attrMapString = 'attrMap',
         isNodeString = 'isNode',
         isElementString = 'isElement',
-        d = typeof document === obj ? document : {},
-        isType = function(a, type){
-            return typeof a === type;
-        },
-        isNode = typeof Node === fn ? function (object) {
+        d = document,
+        isNode = function (object) {
             return object instanceof Node;
-        } :
-        // in IE <= 8 Node is an object, obviously..
-        function(object){
-            return object &&
-                isType(object, obj) &&
-                (nodeType in object) &&
-                isType(object.ownerDocument,obj);
         },
         isElement = function (object) {
             return crel[isNodeString](object) && object[nodeType] === 1;
         },
-        isArray = function(a){
-            return a instanceof Array;
-        },
         appendChild = function(element, child) {
-            if (isArray(child)) {
+            if (Array.isArray(child)) {
                 child.map(function(subChild){
                     appendChild(element, subChild);
                 });
@@ -96,49 +65,39 @@
 
         element = crel[isElementString](element) ? element : d.createElement(element);
         // shortcut
-        if(argumentsLength === 1){
-            return element;
-        }
+        if(argumentsLength > 1){
+            if(!isType(settings,obj) || crel[isNodeString](settings) || Array.isArray(settings)) {
+                --childIndex;
+                settings = null;
+            }
 
-        if(!isType(settings,obj) || crel[isNodeString](settings) || isArray(settings)) {
-            --childIndex;
-            settings = null;
-        }
+            // shortcut if there is only one child that is a string
+            if((argumentsLength - childIndex) === 1 && isType(args[childIndex], 'string')){
+                element.textContent = args[childIndex];
+            }else{
+                for(; childIndex < argumentsLength; ++childIndex){
+                    child = args[childIndex];
 
-        // shortcut if there is only one child that is a string
-        if((argumentsLength - childIndex) === 1 && isType(args[childIndex], 'string') && element[textContent] !== undefined){
-            element[textContent] = args[childIndex];
-        }else{
-            for(; childIndex < argumentsLength; ++childIndex){
-                child = args[childIndex];
-
-                if(child == null){
-                    continue;
-                }
-
-                if (isArray(child)) {
-                  for (var i=0; i < child.length; ++i) {
-                    appendChild(element, child[i]);
-                  }
-                } else {
-                  appendChild(element, child);
+                    if(child !== null){
+                        appendChild(element, child);
+                    }
                 }
             }
-        }
 
-        for(var key in settings){
-            if(!attributeMap[key]){
-                if(isType(settings[key],fn)){
-                    element[key] = settings[key];
+            for(var key in settings){
+                if(!attributeMap[key]){
+                    if(isType(settings[key],fn)){
+                        element[key] = settings[key];
+                    }else{
+                        element[setAttribute](key, settings[key]);
+                    }
                 }else{
-                    element[setAttribute](key, settings[key]);
-                }
-            }else{
-                var attr = attributeMap[key];
-                if(typeof attr === fn){
-                    attr(element, settings[key]);
-                }else{
-                    element[setAttribute](attr, settings[key]);
+                    var attr = attributeMap[key];
+                    if(isType(attr, fn)){
+                        attr(element, settings[key]);
+                    }else{
+                        element[setAttribute](attr, settings[key]);
+                    }
                 }
             }
         }
@@ -153,7 +112,7 @@
 
     crel[isNodeString] = isNode;
 
-    if(typeof Proxy !== 'undefined'){
+    if(!isType(Proxy, 'undefined')){
         crel.proxy = new Proxy(crel, {
             get: function(target, key){
                 !(key in crel) && (crel[key] = crel.bind(null, key));
