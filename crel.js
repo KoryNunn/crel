@@ -24,7 +24,6 @@ This might make it harder to read at times, but the code's intention should be t
     // These strings are used multiple times, so this makes things smaller once compiled
     var func = 'function',
         obj = 'object',
-        setAttribute = 'setAttribute',
         attrMapString = 'attrMap',
         isNodeString = 'isNode',
         isElementString = 'isElement',
@@ -72,7 +71,7 @@ This might make it harder to read at times, but the code's intention should be t
                     element[key] = attribute;
                 } else {
                     // Set the element attribute
-                    element[setAttribute](key, attribute);
+                    element.setAttribute(key, attribute);
                 }
             }
         }
