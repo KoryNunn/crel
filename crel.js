@@ -77,23 +77,18 @@ This might make it harder to read at times, but the code's intention should be t
             }
             // Go through settings / attributes object, if it exists
             for (var key in settings) {
-                // Check for any defined custom functionality for key
-                if (attributeMap[key]) {
-                    var attrKey = attributeMap[key];
-                    // Check if mapping to another attribute name, or to a custom function
-                    if (isType(attrKey, func)) {
-                        attrKey(element, settings[key]);
-                    } else {
-                        // Set the element attribute using our new key
-                        element[setAttribute](attrKey, settings[key]);
-                    }
+                // Store the attribute into a variable, before we potentially modify the key
+                var attribute = settings[key];
+                // Get mapped key / function, if one exists
+                key = attributeMap[key] || key;
+                // Note: We want to prioritise mapping over properties
+                if (isType(key, func)) {
+                    key(element, attribute);
+                } else if (isType(attribute, func)) { // ex. onClick property
+                    element[key] = attribute;
                 } else {
-                    if (isType(settings[key], func)) { // ex. onClick property
-                        element[key] = settings[key];
-                    } else {
-                        // Set the element attribute
-                        element[setAttribute](key, settings[key]);
-                    }
+                    // Set the element attribute
+                    element[setAttribute](key, attribute);
                 }
             }
         }
