@@ -16,7 +16,7 @@
   "scripts": {
     "test": "npm run testBuild && google-chrome ./test/index.browser.js",
     "testBuild": "browserify ./test/index.js > ./test/index.browser.js",
-    "build": "uglifyjs crel.js -m -c > crel.min.js"
+    "build": "uglifyjs crel.js -m -c --warn -o crel.min.js"
   },
   "repository": {
     "type": "git",
