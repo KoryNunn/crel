@@ -102,6 +102,28 @@ test('Add an `onEvent` property to an element through attribute mapping', functi
     testElement.click();
 });
 
+test('Modify properties of an element', function (t) {
+    t.plan(2);
+
+    var testElement = document.createElement('p');
+    testElement.textContent = 'Hello world!'
+    crel(testElement, {'textContent': 'Crello world!'});
+
+    t.equal(testElement.textContent, 'Crello world!',
+        'elements `textContent` was changed');
+    t.equal(testElement.getAttribute('textContent'), null,
+        'no extra attributes were created');
+});
+
+test('Modify style properties of an element', function (t) {
+    t.plan(1);
+
+    var testElement = crel('div', {style: {color: 'red'}});
+
+    t.equal(testElement.style.color, 'red',
+        'element is now red, :tada:');
+});
+
 // -- Test child node handling --
 test('Create an element with a child element', function (t) {
     t.plan(2);
