@@ -11,8 +11,6 @@ test('Create an element with no arguments', function (t) {
         'element is an instance of `HTMLElement`');
     t.equal(testElement.tagName, 'DIV',
         'element is an instance of `div`');
-
-    t.end();
 });
 
 // -- Test attribute handling --
@@ -25,8 +23,6 @@ test('Create an element with simple attributes', function (t) {
         'element has a `test` class');
     t.equal(testElement.getAttribute('id'), 'test',
         'element has a `test` id');
-
-    t.end();
 });
 
 test('Add attributes to an already existing element', function (t) {
@@ -39,8 +35,6 @@ test('Add attributes to an already existing element', function (t) {
         'element has a `test` class');
     t.equal(testElement.getAttribute('id'), 'test',
         'element has a `test` id');
-
-    t.end();
 });
 
 test('Add an `onEvent` property to an element', function (t) {
@@ -53,8 +47,6 @@ test('Add an `onEvent` property to an element', function (t) {
     });
 
     testElement.click();
-
-    t.end();
 });
 
 // -- Test child node handling --
@@ -67,8 +59,6 @@ test('Create an element with a child element', function (t) {
         'element has a child element');
     t.equal(testElement.childNodes[0].tagName, 'P',
         'child element is an instance of `p`');
-
-    t.end();
 });
 
 test('Create an element with a child text node', function (t) {
@@ -80,8 +70,6 @@ test('Create an element with a child text node', function (t) {
         'element has a child element');
     t.equal(testElement.childNodes[0].nodeType, 3,
         'child element is a text node');
-
-    t.end();
 });
 
 test('Create an element with an array of children', function (t) {
@@ -97,8 +85,6 @@ test('Create an element with an array of children', function (t) {
     t.equal(testElement.childNodes[1].textContent, 'I\'m a text node!');
     t.equal(testElement.childNodes[2].nodeType, 3);
     t.equal(testElement.childNodes[2].textContent, 'I will be a text node!');
-
-    t.end();
 });
 
 test('Create an element with a deep array of children', function (t) {
@@ -114,8 +100,6 @@ test('Create an element with a deep array of children', function (t) {
     t.equal(testElement.childNodes[1].textContent, 'I\'m a text node!');
     t.equal(testElement.childNodes[2].nodeType, 3);
     t.equal(testElement.childNodes[2].textContent, 'I will be a text node!');
-
-    t.end();
 });
 
 // -- Test exposed methods --
@@ -148,12 +132,8 @@ test('Test that `isNode` is defined', function (t) {
           testInputValid.map(function (value) {
               ts.ok(crel.isNode(value), '`' + value + '` is a Node');
           });
-
-          ts.end();
       });
     }
-
-    t.end();
 });
 
 test('Test that `isElement` is defined', function (t) {
@@ -184,12 +164,8 @@ test('Test that `isElement` is defined', function (t) {
           testInputValid.map(function (value) {
               ts.ok(crel.isElement(value), '`' + value + '` is an Element');
           });
-
-          ts.end();
       });
     }
-
-    t.end();
 });
 
 // -- Test the Proxy API --
