@@ -24,6 +24,16 @@ test('Create an element with no arguments, using an invalid tag name', function 
         'element is an instance of `invalidtagname`');
 });
 
+test('Crel doesn\'t modify existing elements if not instructed', function (t) {
+    t.plan(1);
+
+    var testElement = document.createElement('div');
+    var testedElement = crel(testElement);
+
+    t.ok(testElement.isSameNode(testedElement),
+        'element is still the same');
+});
+
 // -- Test attribute handling --
 test('Create an element with simple attributes', function (t) {
     t.plan(2);
