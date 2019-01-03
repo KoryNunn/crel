@@ -58,6 +58,20 @@ test('Add attributes to an already existing element', function (t) {
         'element has a `test` id');
 });
 
+test('Modify attributes of an already existing element', function (t) {
+    t.plan(2);
+
+    var testElement = document.createElement('div');
+    testElement.setAttribute('class', 'test');
+    testElement.setAttribute('id', 'test');
+    crel(testElement, {'class': 'testier', id: 'testier'});
+
+    t.equal(testElement.getAttribute('class'), 'testier',
+        'elements class was changed');
+    t.equal(testElement.getAttribute('id'), 'testier',
+        'elements id was changed');
+});
+
 test('Add an `onEvent` property to an element', function (t) {
     t.plan(1);
 
