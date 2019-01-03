@@ -13,6 +13,17 @@ test('Create an element with no arguments', function (t) {
         'element is an instance of `div`');
 });
 
+test('Create an element with no arguments, using an invalid tag name', function (t) {
+    t.plan(2);
+
+    var testElement = crel('invalidtagname');
+
+    t.ok(testElement instanceof HTMLUnknownElement,
+        'element is an instance of `HTMLUnknownElement `');
+    t.equal(testElement.tagName, 'INVALIDTAGNAME',
+        'element is an instance of `invalidtagname`');
+});
+
 // -- Test attribute handling --
 test('Create an element with simple attributes', function (t) {
     t.plan(2);
