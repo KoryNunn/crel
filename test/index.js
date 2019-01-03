@@ -155,6 +155,30 @@ test('Create an element with a deep array of children', function (t) {
     t.equal(testElement.childNodes[2].textContent, 'I will be a text node!');
 });
 
+// -- Test invalid input handling --
+test('Pass invalid elements / tagnames ([nothing], \'\', null, undefined, {}, [numbers])', function (t) {
+    var testElement;
+    // ? what about functions as tagnames
+    // ? should we also add tests for valid input, like with isElement and isNode bellow
+    var testInput = ['', null, undefined, {}, 0, 4.2, -42];
+
+    t.plan((testInput.length + 1) * 2); // 2 tests for every value in array, + for no input
+
+    t.doesNotThrow(function () { testElement = crel(); }, 'Pass no input');
+    // Not returning an element with no input should be sane behaviour
+    t.equal(testElement, undefined,
+        'no element was created');
+
+    testInput.map(function (value) {
+      testElement = undefined;
+        t.doesNotThrow(function () { testElement = crel(value); },
+            'Pass invalid input: `' + value + '`');
+        // Not returning an element on invalid input should be sane behaviour
+        t.equal(testElement, undefined,
+            'no element was created with invalid input: `' + value + '`');
+    });
+});
+
 // -- Test exposed methods --
 test('Test that `isNode` is defined', function (t) {
     // Assign into a variable to help readability
