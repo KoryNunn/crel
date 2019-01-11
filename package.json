@@ -11,12 +11,12 @@
   "devDependencies": {
     "browserify": "^14.4.0",
     "tape": "^3.0.3",
-    "uglify-js": "^2.4.16"
+    "uglify-js": "^3.4.9"
   },
   "scripts": {
     "test": "npm run testBuild && google-chrome ./test/index.browser.js",
     "testBuild": "browserify ./test/index.js > ./test/index.browser.js",
-    "build": "uglifyjs crel.js -m -c > crel.min.js"
+    "build": "uglifyjs crel.js -m -c --warn -o crel.min.js"
   },
   "repository": {
     "type": "git",
