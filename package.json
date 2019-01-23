@@ -9,8 +9,8 @@
   "main": "crel.js",
   "dependencies": {},
   "devDependencies": {
-    "browserify": "^14.4.0",
-    "tape": "^3.0.3",
+    "browserify": "^16.2.3",
+    "tape": "^4.9.2",
     "uglify-es": "^3.3.9"
   },
   "scripts": {
