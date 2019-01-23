@@ -5,7 +5,7 @@
   "tags": [
     "DOM"
   ],
-  "version": "3.1.0",
+  "version": "4.0.0",
   "main": "crel.js",
   "dependencies": {
     "uglifyjs": "^2.4.11"
@@ -17,7 +17,7 @@
   },
   "scripts": {
     "test": "npm run testBuild && google-chrome ./test/index.browser.js",
-    "testBuild": "browserify ./test/index.js > ./test/index.browse.js",
+    "testBuild": "browserify ./test/index.js > ./test/index.browser.js",
     "build": "uglifyjs crel.js -m -c --warn -o crel.min.js"
   },
   "repository": {
