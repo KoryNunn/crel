@@ -34,14 +34,16 @@ This might make it harder to read at times, but the code's intention should be t
         isElement = (object) => object instanceof Element,
         // Recursively appends children to given element. As a text node if not already an element
         appendChild = (element, child) => {
-            if (Array.isArray(child)) { // Support (deeply) nested child elements
-                child.map((subChild) => appendChild(element, subChild));
-                return;
+            if (child !== null) {
+                if (Array.isArray(child)) { // Support (deeply) nested child elements
+                    child.map((subChild) => appendChild(element, subChild));
+                    return;
+                }
+                if (!crel[isNodeString](child)) {
+                    child = d.createTextNode(child);
+                }
+                element.appendChild(child);
             }
-            if (!crel[isNodeString](child)) {
-                child = d.createTextNode(child);
-            }
-            element.appendChild(child);
         };
     //
     function crel (element, settings) {
@@ -79,7 +81,7 @@ This might make it harder to read at times, but the code's intention should be t
         }
         // Loop through all arguments, if any, and append them to our element if they're not `null`
         for (; index < args.length; index++) {
-            args[index] !== null && appendChild(element, args[index]);
+            appendChild(element, args[index]);
         }
 
         return element;
