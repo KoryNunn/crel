@@ -5,10 +5,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 NOTE:
 This code is formatted for run-speed and to assist compilers.
-This might make it harder to read at times, but the code's intentiona should be transparent. */
+This might make it harder to read at times, but the code's intention should be transparent. */
 
 // IIFE our function
-(function (root, factory) {
+(((root, factory) => {
     if (typeof exports === 'object') {
         // Export for Browserify / CommonJS format
         module.exports = factory();
@@ -19,7 +19,7 @@ This might make it harder to read at times, but the code's intentiona should be 
         // Export as a 'global' function
         root.crel = factory();
     }
-}(this, function () {
+})(this, () => {
     // Define our function and its properties
     // These strings are used multiple times, so this makes things smaller once compiled
     var func = 'function',
@@ -30,21 +30,13 @@ This might make it harder to read at times, but the code's intentiona should be 
         isElementString = 'isElement',
         d = document,
         // Helper functions used throughout the script
-        isType = function (object, type) {
-            return typeof object === type;
-        },
-        isNode = function (node) {
-            return node instanceof Node;
-        },
-        isElement = function (element) {
-            return element instanceof Element;
-        },
+        isType = (object, type) => typeof object === type,
+        isNode = (node) => node instanceof Node,
+        isElement = (object) => object instanceof Element,
         // Recursively appends children to given element. As a text node if not already an element
-        appendChild = function (element, child) {
+        appendChild = (element, child) => {
             if (Array.isArray(child)) { // Support (deeply) nested child elements
-                child.map(function (subChild) {
-                    appendChild(element, subChild);
-                });
+                child.map((subChild) => appendChild(element, subChild));
                 return;
             }
             if (!crel[isNodeString](child)) {
@@ -116,7 +108,7 @@ This might make it harder to read at times, but the code's intentiona should be 
     // Expose proxy interface, if supported
     if (!isType(Proxy, 'undefined')) {
         crel.proxy = new Proxy(crel, {
-            get: function (target, key) {
+            get: (target, key) => {
                 !(key in crel) && (crel[key] = crel.bind(null, key));
                 return crel[key];
             }
