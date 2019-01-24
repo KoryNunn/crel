@@ -7,16 +7,14 @@
   ],
   "version": "4.0.0",
   "main": "crel.js",
-  "dependencies": {
-    "uglifyjs": "^2.4.11"
-  },
+  "dependencies": {},
   "devDependencies": {
     "browserify": "^14.4.0",
     "tape": "^3.0.3",
     "uglify-es": "^3.3.9"
   },
   "scripts": {
-    "test": "npm run testBuild && google-chrome ./test/index.browser.js",
+    "test": "npm run testBuild && google-chrome ./test/test.html",
     "testBuild": "browserify ./test/index.js > ./test/index.browser.js",
     "build": "uglifyjs crel.js -m -c --warn -o crel.min.js"
   },
