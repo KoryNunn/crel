@@ -58,7 +58,7 @@ where `childN` may be:
 
 - a DOM element,
 - a string, which will be inserted as a `textNode`,
-- `null`, which will be ignored, or
+- `null` or `undefined` which will be ignored, or
 - an `Array` containing any of the above
 
 ## Examples
@@ -79,8 +79,7 @@ You can add attributes that have dashes or reserved keywords in the name, by usi
 crel('div', { 'class': 'thing', 'data-attribute': 'majigger' });
 ```
 
-You can define custom functionality for certain keys seen in the attributes
-object:
+You can define custom functionality for certain keys seen in the attributes object:
 
 ```javascript
 crel.attrMap['on'] = (element, value) => {
