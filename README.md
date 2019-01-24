@@ -135,7 +135,7 @@ var element = crel.div(
 
 # Browser support
 
-Crel works in all browsers created in the last decade.
+Crel works in all evergreen browsers.
 
 # Goals
 
