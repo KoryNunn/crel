@@ -48,41 +48,37 @@ This might make it harder to read at times, but the code's intention should be t
     function crel (element, settings) {
         // Define all used variables / shortcuts here, to make things smaller once compiled
         var args = arguments, // Note: assigned to a variable to assist compilers.
-            argumentsLength = args.length,
             index = 1,
             attributeMap = crel[attrMapString];
         // If first argument is an element, use it as is, otherwise treat it as a tagname
         element = crel[isElementString](element) ? element : d.createElement(element);
-        // Skip unnecessary logic if there are no additional arguments
-        if (argumentsLength > 1) {
-            // Check if second argument is a settings object. Skip it if it's:
-            // - not an object
-            // - a Node
-            // - an array
-            if (!(!isType(settings, obj) || crel[isNodeString](settings) || Array.isArray(settings))) {
-                // Don't treat settings as a child
-                index++;
-                // Go through settings / attributes object, if it exists
-                for (var key in settings) {
-                    // Store the attribute into a variable, before we potentially modify the key
-                    var attribute = settings[key];
-                    // Get mapped key / function, if one exists
-                    key = attributeMap[key] || key;
-                    // Note: We want to prioritise mapping over properties
-                    if (isType(key, func)) {
-                        key(element, attribute);
-                    } else if (isType(attribute, func)) { // ex. onClick property
-                        element[key] = attribute;
-                    } else {
-                        // Set the element attribute
-                        element[setAttribute](key, attribute);
-                    }
+        // Check if second argument is a settings object. Skip it if it's:
+        // - not an object (this includes `undefined`)
+        // - a Node
+        // - an array
+        if (!(!isType(settings, obj) || crel[isNodeString](settings) || Array.isArray(settings))) {
+            // Don't treat settings as a child
+            index++;
+            // Go through settings / attributes object, if it exists
+            for (var key in settings) {
+                // Store the attribute into a variable, before we potentially modify the key
+                var attribute = settings[key];
+                // Get mapped key / function, if one exists
+                key = attributeMap[key] || key;
+                // Note: We want to prioritise mapping over properties
+                if (isType(key, func)) {
+                    key(element, attribute);
+                } else if (isType(attribute, func)) { // ex. onClick property
+                    element[key] = attribute;
+                } else {
+                    // Set the element attribute
+                    element[setAttribute](key, attribute);
                 }
             }
-            // Loop through all arguments and append them to our element if they're not `null`
-            for (; index < argumentsLength; index++) {
-                args[index] !== null && appendChild(element, args[index]);
-            }
+        }
+        // Loop through all arguments, if any, and append them to our element if they're not `null`
+        for (; index < args.length; index++) {
+            args[index] !== null && appendChild(element, args[index]);
         }
 
         return element;
