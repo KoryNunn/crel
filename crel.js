@@ -48,6 +48,8 @@ This might make it harder to read at times, but the code's intention should be t
         // Define all used variables / shortcuts here, to make things smaller once compiled
         var args = arguments, // Note: assigned to a variable to assist compilers.
             index = 1,
+            key,
+            attribute,
             attributeMap = crel[attrMapString];
         // If first argument is an element, use it as is, otherwise treat it as a tagname
         element = crel[isElementString](element) ? element : d.createElement(element);
@@ -59,9 +61,9 @@ This might make it harder to read at times, but the code's intention should be t
             // Don't treat settings as a child
             index++;
             // Go through settings / attributes object, if it exists
-            for (var key in settings) {
+            for (key in settings) {
                 // Store the attribute into a variable, before we potentially modify the key
-                var attribute = settings[key];
+                attribute = settings[key];
                 // Get mapped key / function, if one exists
                 key = attributeMap[key] || key;
                 // Note: We want to prioritise mapping over properties
