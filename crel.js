@@ -37,12 +37,12 @@ This might make it harder to read at times, but the code's intention should be t
             if (child !== null) {
                 if (Array.isArray(child)) { // Support (deeply) nested child elements
                     child.map((subChild) => appendChild(element, subChild));
-                    return;
+                } else {
+                    if (!crel[isNodeString](child)) {
+                        child = d.createTextNode(child);
+                    }
+                    element.appendChild(child);
                 }
-                if (!crel[isNodeString](child)) {
-                    child = d.createTextNode(child);
-                }
-                element.appendChild(child);
             }
         };
     //
