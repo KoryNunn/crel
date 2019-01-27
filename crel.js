@@ -50,7 +50,10 @@ This might make it harder to read at times, but the code's intention should be t
                     // Note: We want to prioritise mapping over properties
                     if (isType(key, func)) {
                         key(element, attribute);
-                    } else if (isType(attribute, func)) { // ex. onClick property
+                    } else if (isType(attribute, func) || key in element) {
+                        // Set the element property, if it:
+                        // - takes a function as a value (ex. `onClick` or any other `onEvent`)
+                        // - the key exists in the DOM tree
                         element[key] = attribute;
                     } else {
                         // Set the element attribute
