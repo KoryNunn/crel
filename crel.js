@@ -76,15 +76,13 @@ This might make it harder to read at times, but the code's intention should be t
     crel.attrMap = {};
     crel.isElement = isElement;
     crel[isNodeString] = isNode;
-    // Expose proxy interface, if supported
-    if (!isType(Proxy, 'undefined')) {
-        crel.proxy = new Proxy(crel, {
-            get: (target, key) => {
-                !(key in crel) && (crel[key] = crel.bind(null, key));
-                return crel[key];
-            }
-        });
-    }
+    // Expose proxy interface
+    crel.proxy = new Proxy(crel, {
+        get: (target, key) => {
+            !(key in crel) && (crel[key] = crel.bind(null, key));
+            return crel[key];
+        }
+    });
     // Export crel
     exporter(crel, func);
 })((product, func) => {
