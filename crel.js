@@ -23,10 +23,7 @@ This might make it harder to read at times, but the code's intention should be t
     // Define our function and its properties
     // These strings are used multiple times, so this makes things smaller once compiled
     var func = 'function',
-        obj = 'object',
-        attrMapString = 'attrMap',
         isNodeString = 'isNode',
-        isElementString = 'isElement',
         d = document,
         // Helper functions used throughout the script
         isType = (object, type) => typeof object === type,
@@ -51,15 +48,14 @@ This might make it harder to read at times, but the code's intention should be t
         var args = arguments, // Note: assigned to a variable to assist compilers.
             index = 1,
             key,
-            attribute,
-            attributeMap = crel[attrMapString];
+            attribute;
         // If first argument is an element, use it as is, otherwise treat it as a tagname
-        element = crel[isElementString](element) ? element : d.createElement(element);
+        element = crel.isElement(element) ? element : d.createElement(element);
         // Check if second argument is a settings object. Skip it if it's:
         // - not an object (this includes `undefined`)
         // - a Node
         // - an array
-        if (!(!isType(settings, obj) || crel[isNodeString](settings) || Array.isArray(settings))) {
+        if (!(!isType(settings, 'object') || crel[isNodeString](settings) || Array.isArray(settings))) {
             // Don't treat settings as a child
             index++;
             // Go through settings / attributes object, if it exists
@@ -67,7 +63,7 @@ This might make it harder to read at times, but the code's intention should be t
                 // Store the attribute into a variable, before we potentially modify the key
                 attribute = settings[key];
                 // Get mapped key / function, if one exists
-                key = attributeMap[key] || key;
+                key = crel.attrMap[key] || key;
                 // Note: We want to prioritise mapping over properties
                 if (isType(key, func)) {
                     key(element, attribute);
@@ -88,8 +84,8 @@ This might make it harder to read at times, but the code's intention should be t
     }
 
     // Used for mapping attribute keys to supported versions in bad browsers, or to custom functionality
-    crel[attrMapString] = {};
-    crel[isElementString] = isElement;
+    crel.attrMap = {};
+    crel.isElement = isElement;
     crel[isNodeString] = isNode;
     // Expose proxy interface, if supported
     if (!isType(Proxy, 'undefined')) {
