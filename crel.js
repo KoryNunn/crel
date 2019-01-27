@@ -86,12 +86,12 @@ This might make it harder to read at times, but the code's intention should be t
         });
     }
     // Export crel
-    exporter(crel);
-})((product) => {
+    exporter(crel, func);
+})((product, func) => {
     if (typeof exports === 'object') {
         // Export for Browserify / CommonJS format
         module.exports = product;
-    } else if (typeof define === 'function' && define.amd) {
+    } else if (typeof define === func && define.amd) {
         // Export for RequireJS / AMD format
         define(product);
     } else {
