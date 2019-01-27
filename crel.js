@@ -22,7 +22,7 @@ This might make it harder to read at times, but the code's intention should be t
 })(this, () => {
     // Define our function and its properties
     // These strings are used multiple times, so this makes things smaller once compiled
-    var func = 'function',
+    const func = 'function',
         isNodeString = 'isNode',
         d = document,
         // Helper functions used throughout the script
@@ -45,7 +45,7 @@ This might make it harder to read at times, but the code's intention should be t
     //
     function crel (element, settings) {
         // Define all used variables / shortcuts here, to make things smaller once compiled
-        var args = arguments, // Note: assigned to a variable to assist compilers.
+        let args = arguments, // Note: assigned to a variable to assist compilers.
             index = 1,
             key,
             attribute;
