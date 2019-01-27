@@ -8,18 +8,7 @@ This code is formatted for run-speed and to assist compilers.
 This might make it harder to read at times, but the code's intention should be transparent. */
 
 // IIFE our function
-(((root, factory) => {
-    if (typeof exports === 'object') {
-        // Export for Browserify / CommonJS format
-        module.exports = factory();
-    } else if (typeof define === 'function' && define.amd) {
-        // Export for RequireJS / AMD format
-        define(factory);
-    } else {
-        // Export as a 'global' function
-        root.crel = factory();
-    }
-})(this, () => {
+((exporter) => {
     // Define our function and its properties
     // These strings are used multiple times, so this makes things smaller once compiled
     const func = 'function',
@@ -96,6 +85,17 @@ This might make it harder to read at times, but the code's intention should be t
             }
         });
     }
-
-    return crel;
-}));
+    // Export crel
+    exporter(crel);
+})((product) => {
+    if (typeof exports === 'object') {
+        // Export for Browserify / CommonJS format
+        module.exports = product;
+    } else if (typeof define === 'function' && define.amd) {
+        // Export for RequireJS / AMD format
+        define(product);
+    } else {
+        // Export as a 'global' function
+        this.crel = product;
+    }
+});
