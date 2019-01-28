@@ -9,12 +9,13 @@
   "main": "crel.js",
   "dependencies": {},
   "devDependencies": {
-    "browserify": "^14.4.0",
-    "tape": "^3.0.3",
+    "browserify": "^16.2.3",
+    "opn-cli": "^4.0.0",
+    "tape": "^4.9.2",
     "uglify-es": "^3.3.9"
   },
   "scripts": {
-    "test": "npm run testBuild && google-chrome ./test/test.html",
+    "test": "npm run testBuild && opn ./test/test.html",
     "testBuild": "browserify ./test/index.js > ./test/index.browser.js",
     "build": "uglifyjs crel.js -m -c --warn -o crel.min.js"
   },
