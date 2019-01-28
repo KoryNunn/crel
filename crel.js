@@ -8,26 +8,11 @@ This code is formatted for run-speed and to assist compilers.
 This might make it harder to read at times, but the code's intention should be transparent. */
 
 // IIFE our function
-(((root, factory) => {
-    if (typeof exports === 'object') {
-        // Export for Browserify / CommonJS format
-        module.exports = factory();
-    } else if (typeof define === 'function' && define.amd) {
-        // Export for RequireJS / AMD format
-        define(factory);
-    } else {
-        // Export as a 'global' function
-        root.crel = factory();
-    }
-})(this, () => {
+((exporter) => {
     // Define our function and its properties
     // These strings are used multiple times, so this makes things smaller once compiled
-    var func = 'function',
-        obj = 'object',
-        setAttribute = 'setAttribute',
-        attrMapString = 'attrMap',
+    const func = 'function',
         isNodeString = 'isNode',
-        isElementString = 'isElement',
         d = document,
         // Helper functions used throughout the script
         isType = (object, type) => typeof object === type,
@@ -35,85 +20,80 @@ This might make it harder to read at times, but the code's intention should be t
         isElement = (object) => object instanceof Element,
         // Recursively appends children to given element. As a text node if not already an element
         appendChild = (element, child) => {
-            if (Array.isArray(child)) { // Support (deeply) nested child elements
-                child.map((subChild) => appendChild(element, subChild));
-                return;
+            if (child !== null) {
+                if (Array.isArray(child)) { // Support (deeply) nested child elements
+                    child.map((subChild) => appendChild(element, subChild));
+                } else {
+                    if (!crel[isNodeString](child)) {
+                        child = d.createTextNode(child);
+                    }
+                    element.appendChild(child);
+                }
             }
-            if (!crel[isNodeString](child)) {
-                child = d.createTextNode(child);
-            }
-            element.appendChild(child);
         };
     //
-    function crel (element) {
+    function crel (element, settings) {
         // Define all used variables / shortcuts here, to make things smaller once compiled
-        var args = arguments, // Note: assigned to a variable to assist compilers. Saves about 40 bytes in closure compiler. Has negligable effect on performance.
-            argumentsLength = args.length,
-            settings = args[1],
-            currentIndex = 2,
-            child,
-            attributeMap = crel[attrMapString];
+        let args = arguments, // Note: assigned to a variable to assist compilers.
+            index = 1,
+            key,
+            attribute;
         // If first argument is an element, use it as is, otherwise treat it as a tagname
-        element = crel[isElementString](element) ? element : d.createElement(element);
-        // Skip unnecessary checks if there are no additional arguments
-        if (argumentsLength > 1) {
-            // Check if settings is an attribute object, and if not include it in our loop bellow
-            if (!isType(settings, obj) || crel[isNodeString](settings) || Array.isArray(settings)) {
-                currentIndex--;
-                settings = null;
-            }
-            // Shortcut if there is only one child that is a string
-            if ((argumentsLength - currentIndex) === 1 && isType(args[currentIndex], 'string')) {
-                element.textContent = args[currentIndex];
-            } else {
-                // Loop through all remaining arguments and append them to our element
-                for (; currentIndex < argumentsLength; currentIndex++) {
-                    child = args[currentIndex];
-                    // Ignore null arguments
-                    if (child !== null) {
-                        appendChild(element, child);
-                    }
-                }
-            }
+        element = crel.isElement(element) ? element : d.createElement(element);
+        // Check if second argument is a settings object. Skip it if it's:
+        // - not an object (this includes `undefined`)
+        // - a Node
+        // - an array
+        if (!(!isType(settings, 'object') || crel[isNodeString](settings) || Array.isArray(settings))) {
+            // Don't treat settings as a child
+            index++;
             // Go through settings / attributes object, if it exists
-            for (var key in settings) {
-                // Check for any defined custom functionality for key
-                if (attributeMap[key]) {
-                    var attrKey = attributeMap[key];
-                    // Check if mapping to another attribute name, or to a custom function
-                    if (isType(attrKey, func)) {
-                        attrKey(element, settings[key]);
-                    } else {
-                        // Set the element attribute using our new key
-                        element[setAttribute](attrKey, settings[key]);
-                    }
+            for (key in settings) {
+                // Store the attribute into a variable, before we potentially modify the key
+                attribute = settings[key];
+                // Get mapped key / function, if one exists
+                key = crel.attrMap[key] || key;
+                // Note: We want to prioritise mapping over properties
+                if (isType(key, func)) {
+                    key(element, attribute);
+                } else if (isType(attribute, func)) { // ex. onClick property
+                    element[key] = attribute;
                 } else {
-                    if (isType(settings[key], func)) { // ex. onClick property
-                        element[key] = settings[key];
-                    } else {
-                        // Set the element attribute
-                        element[setAttribute](key, settings[key]);
-                    }
+                    // Set the element attribute
+                    element.setAttribute(key, attribute);
                 }
             }
+        }
+        // Loop through all arguments, if any, and append them to our element if they're not `null`
+        for (; index < args.length; index++) {
+            appendChild(element, args[index]);
         }
 
         return element;
     }
 
     // Used for mapping attribute keys to supported versions in bad browsers, or to custom functionality
-    crel[attrMapString] = {};
-    crel[isElementString] = isElement;
+    crel.attrMap = {};
+    crel.isElement = isElement;
     crel[isNodeString] = isNode;
-    // Expose proxy interface, if supported
-    if (!isType(Proxy, 'undefined')) {
-        crel.proxy = new Proxy(crel, {
-            get: (target, key) => {
-                !(key in crel) && (crel[key] = crel.bind(null, key));
-                return crel[key];
-            }
-        });
+    // Expose proxy interface
+    crel.proxy = new Proxy(crel, {
+        get: (target, key) => {
+            !(key in crel) && (crel[key] = crel.bind(null, key));
+            return crel[key];
+        }
+    });
+    // Export crel
+    exporter(crel, func);
+})((product, func) => {
+    if (typeof exports === 'object') {
+        // Export for Browserify / CommonJS format
+        module.exports = product;
+    } else if (typeof define === func && define.amd) {
+        // Export for RequireJS / AMD format
+        define(product);
+    } else {
+        // Export as a 'global' function
+        this.crel = product;
     }
-
-    return crel;
-}));
+});
