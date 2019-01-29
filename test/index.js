@@ -222,32 +222,21 @@ test('Test that `isElement` is defined', function (t) {
 });
 
 // -- Test the Proxy API --
-test('Test that the Proxy API is defined', function (t) {
+test('Test that the Proxy API works', function (t) {
     if (typeof Proxy === 'undefined') {
         t.plan(1)
         t.pass('Proxies are not supported in the current environment');
     } else {
-        var proxyCrel = crel.proxy;
+        // I'm not proficient with proxies, so
+        // TODO: Add #moar-tests
+        t.plan(4);
 
-        t.plan(proxyCrel ? 2 : 1);
+        var testElement = crel.proxy.div({'class': 'test'},
+            crel.proxy.span('test'));
 
-        t.ok(proxyCrel, 'The Proxy API is defined');
-
-        if (proxyCrel) {
-            // Do further tests
-            t.test('Test that the Proxy API works', function (ts) {
-                // I'm not proficient with proxies, so
-                // TODO: Add #moar-tests
-                ts.plan(4);
-
-                var testElement = proxyCrel.div({'class': 'test'},
-                    proxyCrel.span('test'));
-
-                ts.equal(testElement.className, 'test');
-                ts.equal(testElement.childNodes.length, 1);
-                ts.equal(testElement.childNodes[0].tagName, 'SPAN');
-                ts.equal(testElement.childNodes[0].textContent, 'test');
-            });
-        }
+        t.equal(testElement.className, 'test');
+        t.equal(testElement.childNodes.length, 1);
+        t.equal(testElement.childNodes[0].tagName, 'SPAN');
+        t.equal(testElement.childNodes[0].textContent, 'test');
     }
 });
