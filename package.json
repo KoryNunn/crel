@@ -12,12 +12,12 @@
     "browserify": "^16.2.3",
     "opn-cli": "^4.0.0",
     "tape": "^4.9.2",
-    "uglify-es": "^3.3.9"
+    "terser": "^3.14.1"
   },
   "scripts": {
     "test": "npm run testBuild && opn ./test/test.html",
     "testBuild": "browserify ./test/index.js > ./test/index.browser.js",
-    "build": "uglifyjs crel.js -m -c --warn -o crel.min.js"
+    "build": "terser crel.js -o crel.min.js --warn --ecma 6 -c pure_getters -m"
   },
   "repository": {
     "type": "git",
