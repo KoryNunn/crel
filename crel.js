@@ -74,8 +74,8 @@ This might make it harder to read at times, but the code's intention should be t
     // Expose proxy interface
     crel.proxy = new Proxy(crel, {
         get: (target, key) => {
-            !(key in crel) && (crel[key] = crel.bind(null, key));
-            return crel[key];
+            !(key in target) && (target[key] = target.bind(null, key));
+            return target[key];
         }
     });
     // Export crel
