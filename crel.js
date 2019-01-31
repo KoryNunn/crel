@@ -13,6 +13,7 @@ This might make it harder to read at times, but the code's intention should be t
     const func = 'function',
         isNodeString = 'isNode',
         proxyString = 'proxy',
+        tagTransformString = 'tagTransform',
         d = document,
         // Helper functions used throughout the script
         isType = (object, type) => typeof object === type,
@@ -70,6 +71,7 @@ This might make it harder to read at times, but the code's intention should be t
                 if (key in target) {
                     return target[key];
                 }
+                key = target[tagTransformString](key);
                 if (!(key in target[proxyString])) {
                     target[proxyString][key] = target.bind(null, key);
                 }
@@ -82,6 +84,8 @@ This might make it harder to read at times, but the code's intention should be t
     crel[isNodeString] = node => node instanceof Node;
     // Bound functions are "cached" here for legacy support and to keep Crels internal structure clean
     crel[proxyString] = new Proxy({}, { get: (target, key) => target[key] || crel[key] });
+    // Transforms tags on call, to for example allow dashes in tags
+    crel[tagTransformString] = key => key;
     // Export crel
     exporter(crel, func);
 })((product, func) => {
