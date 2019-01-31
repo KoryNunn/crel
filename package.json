@@ -17,7 +17,7 @@
   "scripts": {
     "test": "npm run testBuild && opn ./test/test.html",
     "testBuild": "browserify ./test/index.js > ./test/index.browser.js",
-    "build": "terser crel.js -o crel.min.js --warn --ecma 6 -c pure_getters -m"
+    "build": "terser crel.js -o crel.min.js --warn --ecma 6 -c evaluate=false,pure_getters -m"
   },
   "repository": {
     "type": "git",
