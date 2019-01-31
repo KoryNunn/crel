@@ -12,6 +12,7 @@ This might make it harder to read at times, but the code's intention should be t
     // These strings are used multiple times, so this makes things smaller once compiled
     const func = 'function',
         isNodeString = 'isNode',
+        proxyString = 'proxy',
         d = document,
         // Helper functions used throughout the script
         isType = (object, type) => typeof object === type,
@@ -66,14 +67,21 @@ This might make it harder to read at times, but the code's intention should be t
             return element;
         }, {// Binds specific tagnames to crel function calls with that tag as the first argument
             get: (target, key) => {
-                !(key in target) && (target[key] = target.bind(null, key));
-                return target[key];
+                if (key in target) {
+                    return target[key];
+                }
+                if (!(key in target[proxyString])) {
+                    target[proxyString][key] = target.bind(null, key);
+                }
+                return target[proxyString][key];
             }
         });
     // Used for mapping attribute keys to custom functionality, or to supported versions in bad browsers
     crel.attrMap = {};
     crel.isElement = object => object instanceof Element;
     crel[isNodeString] = node => node instanceof Node;
+    // Bound functions are "cached" here for legacy support and to keep Crels internal structure clean
+    crel[proxyString] = new Proxy({}, { get: (target, key) => target[key] || crel[key] });
     // Export crel
     exporter(crel, func);
 })((product, func) => {
