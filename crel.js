@@ -38,11 +38,8 @@ This might make it harder to read at times, but the code's intention should be t
             attribute;
         // If first argument is an element, use it as is, otherwise treat it as a tagname
         element = crel.isElement(element) ? element : d.createElement(element);
-        // Check if second argument is a settings object. Skip it if it's:
-        // - not an object (this includes `undefined`)
-        // - a Node
-        // - an array
-        if (!(!isType(settings, 'object') || crel[isNodeString](settings) || Array.isArray(settings))) {
+        // Check if second argument is a settings object
+        if (isType(settings, 'object') && !crel[isNodeString](settings) && !Array.isArray(settings)) {
             // Don't treat settings as a child
             index++;
             // Go through settings / attributes object, if it exists
