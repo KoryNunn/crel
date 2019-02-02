@@ -20,7 +20,7 @@ This might make it harder to read at times, but the code's intention should be t
         appendChild = (element, child) => {
             if (child !== null) {
                 if (Array.isArray(child)) { // Support (deeply) nested child elements
-                    child.map((subChild) => appendChild(element, subChild));
+                    child.map(subChild => appendChild(element, subChild));
                 } else {
                     if (!crel[isNodeString](child)) {
                         child = d.createTextNode(child);
