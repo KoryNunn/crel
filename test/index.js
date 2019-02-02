@@ -240,3 +240,17 @@ test('Test that the Proxy API works', function (t) {
         t.equal(testElement.childNodes[0].textContent, 'test');
     }
 });
+
+// -- Test the Proxy APIs features --
+test('Test the proxy APIs tag transformations', (t) => {
+    t.plan(4);
+
+    crel.tagTransform = (key) => key.replace(/([0-9a-z])([A-Z])/g, '$1-$2').toLowerCase();
+    let testElement = crel.myTable(crel.span('test'));
+
+    t.equal(testElement.tagName, 'MY-TABLE',
+        'tagname had dashes added to it');
+    t.equal(testElement.childNodes.length, 1);
+    t.equal(testElement.childNodes[0].tagName, 'SPAN');
+    t.equal(testElement.childNodes[0].textContent, 'test');
+});
