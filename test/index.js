@@ -84,6 +84,24 @@ test('Add an `onEvent` property to an element', function (t) {
     testElement.click();
 });
 
+test('Add an `onEvent` property to an element through attribute mapping', function (t) {
+    t.plan(1);
+
+    crel.attrMap.on = function (element, value) {
+        for (var eventName in value) {
+            element.addEventListener(eventName, value[eventName]);
+        }
+    };
+
+    var testElement = crel('img', { on: {
+        click: function () {
+            t.pass('onClick event triggered');
+        }
+    }});
+
+    testElement.click();
+});
+
 // -- Test child node handling --
 test('Create an element with a child element', function (t) {
     t.plan(2);
