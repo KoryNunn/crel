@@ -1,252 +1,265 @@
-var crel = require('../'),
-    test = require('tape');
+const test = require('tape');
+const crel = require('../crel.js');
 
 // All tests in message - test function pairs
-const tests = {
+const tests = [
     // -- Test element creation --
-    'Create an element with no arguments': (t) => {
-        t.plan(2);
+    {
+        message: 'Create an element with no arguments',
+        test: (t) => {
+            let testElement = crel('div');
 
-        var testElement = crel('div');
-
-        t.ok(testElement instanceof HTMLElement,
-            'element is an instance of `HTMLElement`');
-        t.equal(testElement.tagName, 'DIV',
-            'element is an instance of `div`');
+            t.ok(testElement instanceof HTMLElement,
+                'element is an instance of `HTMLElement`');
+            t.equal(testElement.tagName, 'DIV',
+                'element is an instance of `div`');
+        },
+        checks: 2,
+        proxyable: true
     },
-    'Create an element with no arguments, using an invalid tag name': (t) => {
-        t.plan(2);
+    {
+        message: 'Create an element with no arguments, using an invalid tag name',
+        test: (t) => {
+            let testElement = crel('invalidtagname');
 
-        var testElement = crel('invalidtagname');
-
-        t.ok(testElement instanceof HTMLUnknownElement,
-            'element is an instance of `HTMLUnknownElement `');
-        t.equal(testElement.tagName, 'INVALIDTAGNAME',
-            'element is an instance of `invalidtagname`');
+            t.ok(testElement instanceof HTMLUnknownElement,
+                'element is an instance of `HTMLUnknownElement `');
+            t.equal(testElement.tagName, 'INVALIDTAGNAME',
+                'element is an instance of `invalidtagname`');
+        },
+        checks: 2,
+        proxyable: true
     },
-    'Crel doesn\'t modify existing elements if not instructed': (t) => {
-        t.plan(1);
+    {
+        message: 'Crel doesn\'t modify existing elements if not instructed',
+        test: (t) => {
+            let testElement = document.createElement('div');
+            let testedElement = crel(testElement);
 
-        var testElement = document.createElement('div');
-        var testedElement = crel(testElement);
-
-        t.ok(testElement.isSameNode(testedElement),
-            'element is still the same');
+            t.ok(testElement.isSameNode(testedElement),
+                'element is still the same');
+        },
+        checks: 1,
+        proxyable: false
     },
     // -- Test attribute handling --
-    'Create an element with simple attributes': (t) => {
-        t.plan(2);
+    {
+        message: 'Create an element with simple attributes',
+        test: (t) => {
+            let testElement = crel('div', {class: 'test', id: 'test'});
 
-        var testElement = crel('div', {class: 'test', id: 'test'});
-
-        t.equal(testElement.className, 'test',
-            'element has a `test` class');
-        t.equal(testElement.getAttribute('id'), 'test',
-            'element has a `test` id');
+            t.equal(testElement.className, 'test',
+                'element has a `test` class');
+            t.equal(testElement.getAttribute('id'), 'test',
+                'element has a `test` id');
+        },
+        checks: 2,
+        proxyable: true
     },
-    'Add attributes to an already existing element': (t) => {
-        t.plan(2);
+    {
+        message: 'Add attributes to an already existing element',
+        test: (t) => {
+            let testElement = document.createElement('div');
+            crel(testElement, {class: 'test', id: 'test'});
 
-        var testElement = document.createElement('div');
-        crel(testElement, {class: 'test', id: 'test'});
+            t.equal(testElement.className, 'test',
+                'element has a `test` class');
+            t.equal(testElement.getAttribute('id'), 'test',
+                'element has a `test` id');
+        },
+        checks: 2,
+        proxyable: false
+    },
+    {
+        message: 'Modify attributes of an already existing element',
+        test: (t) => {
+            let testElement = document.createElement('div');
+            testElement.setAttribute('class', 'test');
+            testElement.setAttribute('id', 'test');
+            crel(testElement, {class: 'testier', id: 'testier'});
 
-        t.equal(testElement.className, 'test',
-            'element has a `test` class');
-        t.equal(testElement.getAttribute('id'), 'test',
-            'element has a `test` id');
-      },
-      'Modify attributes of an already existing element': (t) => {
-          t.plan(2);
+            t.equal(testElement.getAttribute('class'), 'testier',
+                'elements class was changed');
+            t.equal(testElement.getAttribute('id'), 'testier',
+                'elements id was changed');
+        },
+        checks: 2,
+        proxyable: false
+    },
+    {
+        message: 'Add an `onEvent` property to an element',
+        test: (t) => {
+            let testElement = crel('button', {
+                onclick: () => {
+                    t.pass('onClick event triggered');
+                }
+            });
 
-          var testElement = document.createElement('div');
-          testElement.setAttribute('class', 'test');
-          testElement.setAttribute('id', 'test');
-          crel(testElement, {class: 'testier', id: 'testier'});
+            testElement.click();
+        },
+        checks: 1,
+        proxyable: true
+    },
+    {
+        message: 'Add an `onEvent` property to an element through attribute mapping',
+        test: (t) => {
+            crel.attrMap.on = (element, value) => {
+                for (const eventName in value) {
+                    element.addEventListener(eventName, value[eventName]);
+                }
+            };
 
-          t.equal(testElement.getAttribute('class'), 'testier',
-              'elements class was changed');
-          t.equal(testElement.getAttribute('id'), 'testier',
-              'elements id was changed');
-      },
-      'Add an `onEvent` property to an element': (t) => {
-          t.plan(1);
+            let testElement = crel('img', { on: {
+                click: () => {
+                    t.pass('onClick event triggered');
+                }
+            }});
 
-          var testElement = crel('button', {
-              onclick: function () {
-                  t.pass('onClick event triggered');
-              }
-          });
+            testElement.click();
+        },
+        checks: 1,
+        proxyable: true
+    },
+    // -- Test child node handling --
+    {
+        message: 'Create an element with a child element',
+        test: (t) => {
+            let testElement = crel('div', document.createElement('p'));
 
-          testElement.click();
-      },
-      'Add an `onEvent` property to an element through attribute mapping': (t) => {
-          t.plan(1);
+            t.equal(testElement.childNodes.length, 1,
+                'element has a child element');
+            t.equal(testElement.childNodes[0].tagName, 'P',
+                'child element is an instance of `p`');
+        },
+        checks: 2,
+        proxyable: true
+    },
+    {
+        message: 'Create an element with a child text node',
+        test: (t) => {
+            let testElement = crel('div', document.createTextNode('test'));
 
-          crel.attrMap.on = function (element, value) {
-              for (var eventName in value) {
-                  element.addEventListener(eventName, value[eventName]);
-              }
-          };
+            t.equal(testElement.childNodes.length, 1,
+                'element has a child element');
+            t.equal(testElement.childNodes[0].nodeType, 3,
+                'child element is a text node');
+        },
+        checks: 2,
+        proxyable: true
+    },
+    {
+        message: 'Create an element with an array of children',
+        test: (t) => {
+            // TODO: make these more compact / robust
+            const testArray = [document.createElement('p'), document.createTextNode('I\'m a text node!'), 'I will be a text node!'];
+            let testElement = crel('div', testArray);
 
-          var testElement = crel('img', { on: {
-              click: function () {
-                  t.pass('onClick event triggered');
-              }
-          }});
+            t.equal(testElement.childNodes.length, 3,
+                'element has three children');
+            t.equal(testElement.childNodes[0].tagName, 'P');
+            t.equal(testElement.childNodes[1].nodeType, 3);
+            t.equal(testElement.childNodes[1].textContent, 'I\'m a text node!');
+            t.equal(testElement.childNodes[2].nodeType, 3);
+            t.equal(testElement.childNodes[2].textContent, 'I will be a text node!');
+        },
+        checks: 6,
+        proxyable: true
+    },
+    {
+        message: 'Create an element with a deep array of children',
+        test: (t) => {
+            // TODO: make these more compact / robust
+            const testArray = [document.createElement('p'), document.createTextNode('I\'m a text node!'), 'I will be a text node!'];
+            let testElement = crel('div', [[testArray]]);
 
-          testElement.click();
-      },
-      // -- Test child node handling --
-      'Create an element with a child element': (t) => {
-          t.plan(2);
+            t.equal(testElement.childNodes.length, 3,
+                'element has three children');
+            t.equal(testElement.childNodes[0].tagName, 'P');
+            t.equal(testElement.childNodes[1].nodeType, 3);
+            t.equal(testElement.childNodes[1].textContent, 'I\'m a text node!');
+            t.equal(testElement.childNodes[2].nodeType, 3);
+            t.equal(testElement.childNodes[2].textContent, 'I will be a text node!');
+        },
+        checks: 6,
+        proxyable: true
+    },
+    // -- Test the Proxy APIs features --
+    {
+        message: 'Test the proxy APIs tag transformations',
+        test: (t) => {
+            crel.tagTransform = (key) => key.replace(/([0-9a-z])([A-Z])/g, '$1-$2').toLowerCase();
+            let testElement = crel.myTable(crel.span('test'));
 
-          var testElement = crel('div', document.createElement('p'));
+            t.ok(testElement.isEqualNode(crel.proxy.myTable(crel.proxy.span('test'))),
+                'proxies produce the same results');
+            t.equal(testElement.tagName, 'MY-TABLE',
+                'tagname had dashes added to it');
+            t.equal(testElement.childNodes.length, 1);
+            t.equal(testElement.childNodes[0].tagName, 'SPAN');
+            t.equal(testElement.childNodes[0].textContent, 'test');
+        },
+        checks: 5,
+        proxyable: false
+    },
+    // -- Test exposed methods --
+    {
+        message: 'Test `isNode` against various arguments',
+        test: (t) => {
+            if (!crel.isNode) {
+                t.end('`isNode` is undefined');
+            }
 
-          t.equal(testElement.childNodes.length, 1,
-              'element has a child element');
-          t.equal(testElement.childNodes[0].tagName, 'P',
-              'child element is an instance of `p`');
-      },
-      'Create an element with a child text node': (t) => {
-          t.plan(2);
+            const testInputInvalid = ['', null, undefined, 'non-empty',
+                42, 4.2, {'key': 'value'}, () => { return 'hi'; }];
 
-          var testElement = crel('div', document.createTextNode('test'));
+            const testInputValid = [document,
+                document.createElement('div'),
+                document.createTextNode('test'),
+                document.createElement('invalidtagname'),
+                document.createElementNS('http://www.w3.org/2000/svg', 'svg'),
+                document.createElementNS('http://www.w3.org/1998/mathml', 'element')];
 
-          t.equal(testElement.childNodes.length, 1,
-              'element has a child element');
-          t.equal(testElement.childNodes[0].nodeType, 3,
-              'child element is a text node');
-      },
-      'Create an element with an array of children': (t) => {
-          t.plan(6);
-          // TODO: make these more compact / robust
-          var testArray = [document.createElement('p'), document.createTextNode('I\'m a text node!'), 'I will be a text node!'];
-          var testElement = crel('div', testArray);
+            testInputInvalid.map(value => {
+                t.notOk(crel.isNode(value), '`' + value + '` is not a Node');
+            });
+            testInputValid.map(value => {
+                t.ok(crel.isNode(value), '`' + value + '` is a Node');
+            });
+        },
+        checks: 8 + 6, // Test all values in arrays
+        proxyable: false
+    },
+    {
+        message: 'Test `isElement` against various arguments',
+        test: (t) => {
+            if (!crel.isElement) {
+                t.end('`isElement` is undefined');
+            }
 
-          t.equal(testElement.childNodes.length, 3,
-              'element has three children');
-          t.equal(testElement.childNodes[0].tagName, 'P');
-          t.equal(testElement.childNodes[1].nodeType, 3);
-          t.equal(testElement.childNodes[1].textContent, 'I\'m a text node!');
-          t.equal(testElement.childNodes[2].nodeType, 3);
-          t.equal(testElement.childNodes[2].textContent, 'I will be a text node!');
-      },
-      'Create an element with a deep array of children': (t) => {
-          t.plan(6);
-          // TODO: make these more compact / robust
-          var testArray = [document.createElement('p'), document.createTextNode('I\'m a text node!'), 'I will be a text node!'];
-          var testElement = crel('div', [[testArray]]);
+            const testInputInvalid = ['', null, undefined, 'non-empty',
+                42, 4.2, {'key': 'value'}, () => { return 'hi'; },
+                document.createTextNode('test'), document];
 
-          t.equal(testElement.childNodes.length, 3,
-              'element has three children');
-          t.equal(testElement.childNodes[0].tagName, 'P');
-          t.equal(testElement.childNodes[1].nodeType, 3);
-          t.equal(testElement.childNodes[1].textContent, 'I\'m a text node!');
-          t.equal(testElement.childNodes[2].nodeType, 3);
-          t.equal(testElement.childNodes[2].textContent, 'I will be a text node!');
-      }
-};
+            const testInputValid = [document.createElement('div'),
+                document.createElement('invalidtagname'),
+                document.createElementNS('http://www.w3.org/2000/svg', 'svg'),
+                document.createElementNS('http://www.w3.org/1998/mathml', 'element')];
 
-for (const message in tests) {
-    test(message, tests[message]);
+            testInputInvalid.map(value => {
+                t.notOk(crel.isElement(value), '`' + value + '` is not an Element');
+            });
+            testInputValid.map(value => {
+                t.ok(crel.isElement(value), '`' + value + '` is an Element');
+            });
+        },
+        checks: 10 + 4, // Test all values in arrays
+        proxyable: false
+    }
+];
+
+for (const value of tests) {
+    test(value.message, (t) => {
+        t.plan(value.checks);
+        value.test(t);
+    });
 }
-
-// -- Test exposed methods --
-test('Test that `isNode` is defined', function (t) {
-    // Assign into a variable to help readability
-    var isDefined = crel.isNode;
-
-    t.plan(isDefined ? 2 : 1);
-
-    t.ok(isDefined, '`isNode` is defined');
-
-    if (isDefined) {
-      // Do further tests
-      t.test('Test `isNode` against various arguments', function (ts) {
-          var testInputInvalid = ['', null, undefined, 'non-empty',
-              42, 4.2, {'key': 'value'}, function () { return 'hi'; }];
-
-          var testInputValid = [document,
-              document.createElement('div'),
-              document.createTextNode('test'),
-              document.createElement('invalidtagname'),
-              document.createElementNS('http://www.w3.org/2000/svg', 'svg'),
-              document.createElementNS('http://www.w3.org/1998/mathml', 'element')];
-
-          ts.plan(testInputInvalid.lenght + testInputValid.lenght); // Test all values in arrays
-
-          testInputInvalid.map(function (value) {
-              ts.notOk(crel.isNode(value), '`' + value + '` is not a Node');
-          });
-          testInputValid.map(function (value) {
-              ts.ok(crel.isNode(value), '`' + value + '` is a Node');
-          });
-      });
-    }
-});
-
-test('Test that `isElement` is defined', function (t) {
-    // Assign into a variable to help readability
-    var isDefined = crel.isElement;
-
-    t.plan(isDefined ? 2 : 1);
-
-    t.ok(isDefined, '`isElement` is defined');
-
-    if (isDefined) {
-      // Do further tests
-      t.test('Test `isElement` against various arguments', function (ts) {
-          var testInputInvalid = ['', null, undefined, 'non-empty',
-              42, 4.2, {'key': 'value'}, function () {},
-              document.createTextNode('test'), document];
-
-          var testInputValid = [document.createElement('div'),
-              document.createElement('invalidtagname'),
-              document.createElementNS('http://www.w3.org/2000/svg', 'svg'),
-              document.createElementNS('http://www.w3.org/1998/mathml', 'element')];
-
-          ts.plan(testInputInvalid.lenght + testInputValid.lenght); // Test all values in arrays
-
-          testInputInvalid.map(function (value) {
-              ts.notOk(crel.isElement(value), '`' + value + '` is not an Element');
-          });
-          testInputValid.map(function (value) {
-              ts.ok(crel.isElement(value), '`' + value + '` is an Element');
-          });
-      });
-    }
-});
-
-// -- Test the Proxy API --
-test('Test that the Proxy API works', function (t) {
-    if (typeof Proxy === 'undefined') {
-        t.plan(1)
-        t.pass('Proxies are not supported in the current environment');
-    } else {
-        // I'm not proficient with proxies, so
-        // TODO: Add #moar-tests
-    t.plan(4);
-
-        var testElement = crel.proxy.div({'class': 'test'},
-            crel.proxy.span('test'));
-
-        t.equal(testElement.className, 'test');
-    t.equal(testElement.childNodes.length, 1);
-    t.equal(testElement.childNodes[0].tagName, 'SPAN');
-    t.equal(testElement.childNodes[0].textContent, 'test');
-    }
-});
-
-// -- Test the Proxy APIs features --
-test('Test the proxy APIs tag transformations', (t) => {
-    t.plan(4);
-
-    crel.tagTransform = (key) => key.replace(/([0-9a-z])([A-Z])/g, '$1-$2').toLowerCase();
-    let testElement = crel.myTable(crel.span('test'));
-
-    t.equal(testElement.tagName, 'MY-TABLE',
-        'tagname had dashes added to it');
-    t.equal(testElement.childNodes.length, 1);
-    t.equal(testElement.childNodes[0].tagName, 'SPAN');
-    t.equal(testElement.childNodes[0].textContent, 'test');
-});
