@@ -27,14 +27,14 @@ npm i crel
 ```
 
 ```javascript
-var crel = require('crel');
+let crel = require('crel');
 ```
 
 For AMD:
 
 ```javascript
 require.config({paths: { crel: 'https://cdnjs.cloudflare.com/ajax/libs/crel/4.0.1/crel.min' }});
-require(['crel'], function(crel) {
+require(['crel'], (crel) => {
     // Your code
 });
 ```
@@ -64,7 +64,7 @@ where `childN` may be:
 ## Examples
 
 ```javascript
-var element = crel('div',
+let element = crel('div',
     crel('h1', 'Crello World!'),
     crel('p', 'This is crel'),
     crel('input', { type: 'number' })
@@ -83,14 +83,14 @@ You can define custom functionality for certain keys seen in the attributes
 object:
 
 ```javascript
-crel.attrMap['on'] = function(element, value) {
-    for (var eventName in value) {
+crel.attrMap['on'] = (element, value) => {
+    for (let eventName in value) {
         element.addEventListener(eventName, value[eventName]);
     }
 };
 // Attaches an onClick event to the img element
 crel('img', { on: {
-    'click': function() {
+    click: () => {
         console.log('Clicked');
     }
 }});
@@ -105,8 +105,8 @@ crel(document.body, crel('h1', 'Page title'));
 You can assign child elements to variables during creation:
 
 ```javascript
-var button;
-var wrapper = crel('div',
+let button;
+let wrapper = crel('div',
     button  = crel('button')
 );
 ```
@@ -124,9 +124,9 @@ _But don't._
 If you are using Crel in an environment that supports Proxies, you can also use the new API:
 
 ```javascript
-var crel = require('crel').proxy;
+let crel = require('crel').proxy;
 
-var element = crel.div(
+let element = crel.div(
     crel.h1('Crello World!'),
     crel.p('This is crel'),
     crel.input({ type: 'number' })
@@ -135,7 +135,7 @@ var element = crel.div(
 
 # Browser support
 
-Crel works in all evergreen browsers.
+Crel uses ES6 features, so it'll work in all evergreen browsers.
 
 # Goals
 
