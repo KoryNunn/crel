@@ -33,7 +33,7 @@ var crel = require('crel');
 For AMD:
 
 ```javascript
-require.config({paths: { crel: 'https://cdnjs.cloudflare.com/ajax/libs/crel/3.1.0/crel.min' }});
+require.config({paths: { crel: 'https://cdnjs.cloudflare.com/ajax/libs/crel/4.0.1/crel.min' }});
 require(['crel'], function(crel) {
     // Your code
 });
