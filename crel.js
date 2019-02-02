@@ -16,8 +16,6 @@ This might make it harder to read at times, but the code's intention should be t
         d = document,
         // Helper functions used throughout the script
         isType = (object, type) => typeof object === type,
-        isNode = (node) => node instanceof Node,
-        isElement = (object) => object instanceof Element,
         // Recursively appends children to given element. As a text node if not already an element
         appendChild = (element, child) => {
             if (child !== null) {
@@ -74,8 +72,8 @@ This might make it harder to read at times, but the code's intention should be t
 
     // Used for mapping attribute keys to supported versions in bad browsers, or to custom functionality
     crel.attrMap = {};
-    crel.isElement = isElement;
-    crel[isNodeString] = isNode;
+    crel.isElement = object => object instanceof Element;
+    crel[isNodeString] = node => node instanceof Node;
     // Expose proxy interface
     crel.proxy = new Proxy(crel, {
         get: (target, key) => {
