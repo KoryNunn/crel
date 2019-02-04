@@ -16,13 +16,11 @@ This might make it harder to read at times, but the code's intention should be t
         d = document,
         // Helper functions used throughout the script
         isType = (object, type) => typeof object === type,
-        isNode = (node) => node instanceof Node,
-        isElement = (object) => object instanceof Element,
         // Recursively appends children to given element. As a text node if not already an element
         appendChild = (element, child) => {
             if (child !== null) {
                 if (Array.isArray(child)) { // Support (deeply) nested child elements
-                    child.map((subChild) => appendChild(element, subChild));
+                    child.map(subChild => appendChild(element, subChild));
                 } else {
                     if (!crel[isNodeString](child)) {
                         child = d.createTextNode(child);
@@ -40,11 +38,8 @@ This might make it harder to read at times, but the code's intention should be t
             attribute;
         // If first argument is an element, use it as is, otherwise treat it as a tagname
         element = crel.isElement(element) ? element : d.createElement(element);
-        // Check if second argument is a settings object. Skip it if it's:
-        // - not an object (this includes `undefined`)
-        // - a Node
-        // - an array
-        if (!(!isType(settings, 'object') || crel[isNodeString](settings) || Array.isArray(settings))) {
+        // Check if second argument is a settings object
+        if (isType(settings, 'object') && !crel[isNodeString](settings) && !Array.isArray(settings)) {
             // Don't treat settings as a child
             index++;
             // Go through settings / attributes object, if it exists
@@ -74,8 +69,8 @@ This might make it harder to read at times, but the code's intention should be t
 
     // Used for mapping attribute keys to supported versions in bad browsers, or to custom functionality
     crel.attrMap = {};
-    crel.isElement = isElement;
-    crel[isNodeString] = isNode;
+    crel.isElement = object => object instanceof Element;
+    crel[isNodeString] = node => node instanceof Node;
     // Expose proxy interface
     crel.proxy = new Proxy(crel, {
         get: (target, key) => {
