@@ -78,8 +78,8 @@ This might make it harder to read at times, but the code's intention should be t
     crel.attrMap = {};
     crel.isElement = object => object instanceof Element;
     crel[isNodeString] = node => node instanceof Node;
-    // Bound functions are "cached" here for legacy support and to keep Crels internal structure clean
-    crel[proxyString] = new Proxy({}, { get: (target, key) => target[key] || crel[key] });
+    // Bound functions are "cached" here to keep Crels internal structure clean
+    crel[proxyString] = {};
     // Transforms tags on call, to for example allow dashes in tags
     crel[tagTransformString] = key => key;
     // Export crel
