@@ -231,8 +231,8 @@ test('Test that the Proxy API works', function (t) {
         // TODO: Add #moar-tests
         t.plan(4);
 
-        var testElement = crel.proxy.div({'class': 'test'},
-            crel.proxy.span('test'));
+        var testElement = crel.div({'class': 'test'},
+            crel.span('test'));
 
         t.equal(testElement.className, 'test');
         t.equal(testElement.childNodes.length, 1);
