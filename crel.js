@@ -12,7 +12,6 @@ This might make it harder to read at times, but the code's intention should be t
     // These strings are used multiple times, so this makes things smaller once compiled
     const func = 'function',
         isNodeString = 'isNode',
-        proxyString = 'proxy',
         tagTransformString = 'tagTransform',
         d = document,
         // Helper functions used throughout the script
@@ -68,18 +67,16 @@ This might make it harder to read at times, but the code's intention should be t
                     return target[key];
                 }
                 key = target[tagTransformString](key);
-                if (!(key in target[proxyString])) {
-                    target[proxyString][key] = target.bind(null, key);
+                if (!(key in target)) {
+                    target[key] = target.bind(null, key);
                 }
-                return target[proxyString][key];
+                return target[key];
             }
         });
     // Used for mapping attribute keys to custom functionality, or to supported versions in bad browsers
     crel.attrMap = {};
     crel.isElement = object => object instanceof Element;
     crel[isNodeString] = node => node instanceof Node;
-    // Bound functions are "cached" here to keep Crels internal structure clean
-    crel[proxyString] = {};
     // Transforms tags on call, to for example allow dashes in tags
     crel[tagTransformString] = key => key;
     // Export crel
