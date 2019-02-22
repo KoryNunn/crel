@@ -1,12 +1,12 @@
 const test = require('tape');
 const crel = require('../crel.js');
 
-// All tests in message - test function pairs
+// All tests inside a handy object list format
 const tests = [
     // -- Test element creation --
     {
         message: 'Create an element with no arguments',
-        test: (t) => {
+        test: (t, crel) => {
             let testElement = crel('div');
 
             t.ok(testElement instanceof HTMLElement,
@@ -19,7 +19,7 @@ const tests = [
     },
     {
         message: 'Create an element with no arguments, using an invalid tag name',
-        test: (t) => {
+        test: (t, crel) => {
             let testElement = crel('invalidtagname');
 
             t.ok(testElement instanceof HTMLUnknownElement,
@@ -32,7 +32,7 @@ const tests = [
     },
     {
         message: 'Crel doesn\'t modify existing elements if not instructed',
-        test: (t) => {
+        test: (t, crel) => {
             let testElement = document.createElement('div');
             let testedElement = crel(testElement);
 
@@ -45,7 +45,7 @@ const tests = [
     // -- Test attribute handling --
     {
         message: 'Create an element with simple attributes',
-        test: (t) => {
+        test: (t, crel) => {
             let testElement = crel('div', {class: 'test', id: 'test'});
 
             t.equal(testElement.className, 'test',
@@ -58,7 +58,7 @@ const tests = [
     },
     {
         message: 'Add attributes to an already existing element',
-        test: (t) => {
+        test: (t, crel) => {
             let testElement = document.createElement('div');
             crel(testElement, {class: 'test', id: 'test'});
 
@@ -72,7 +72,7 @@ const tests = [
     },
     {
         message: 'Modify attributes of an already existing element',
-        test: (t) => {
+        test: (t, crel) => {
             let testElement = document.createElement('div');
             testElement.setAttribute('class', 'test');
             testElement.setAttribute('id', 'test');
@@ -88,7 +88,7 @@ const tests = [
     },
     {
         message: 'Add an `onEvent` property to an element',
-        test: (t) => {
+        test: (t, crel) => {
             let testElement = crel('button', {
                 onclick: () => {
                     t.pass('onClick event triggered');
@@ -102,7 +102,7 @@ const tests = [
     },
     {
         message: 'Add an `onEvent` property to an element through attribute mapping',
-        test: (t) => {
+        test: (t, crel) => {
             crel.attrMap.on = (element, value) => {
                 for (const eventName in value) {
                     element.addEventListener(eventName, value[eventName]);
@@ -118,12 +118,12 @@ const tests = [
             testElement.click();
         },
         checks: 1,
-        proxyable: true
+        proxyable: false
     },
     // -- Test child node handling --
     {
         message: 'Create an element with a child element',
-        test: (t) => {
+        test: (t, crel) => {
             let testElement = crel('div', document.createElement('p'));
 
             t.equal(testElement.childNodes.length, 1,
@@ -136,7 +136,7 @@ const tests = [
     },
     {
         message: 'Create an element with a child text node',
-        test: (t) => {
+        test: (t, crel) => {
             let testElement = crel('div', document.createTextNode('test'));
 
             t.equal(testElement.childNodes.length, 1,
@@ -149,7 +149,7 @@ const tests = [
     },
     {
         message: 'Create an element with an array of children',
-        test: (t) => {
+        test: (t, crel) => {
             // TODO: make these more compact / robust
             const testArray = [document.createElement('p'), document.createTextNode('I\'m a text node!'), 'I will be a text node!'];
             let testElement = crel('div', testArray);
@@ -167,7 +167,7 @@ const tests = [
     },
     {
         message: 'Create an element with a deep array of children',
-        test: (t) => {
+        test: (t, crel) => {
             // TODO: make these more compact / robust
             const testArray = [document.createElement('p'), document.createTextNode('I\'m a text node!'), 'I will be a text node!'];
             let testElement = crel('div', [[testArray]]);
@@ -186,7 +186,7 @@ const tests = [
     // -- Test the Proxy APIs features --
     {
         message: 'Test the proxy APIs tag transformations',
-        test: (t) => {
+        test: (t, crel) => {
             crel.tagTransform = (key) => key.replace(/([0-9a-z])([A-Z])/g, '$1-$2').toLowerCase();
             let testElement = crel.myTable(crel.span('test'));
 
@@ -204,7 +204,7 @@ const tests = [
     // -- Test exposed methods --
     {
         message: 'Test `isNode` against various arguments',
-        test: (t) => {
+        test: (t, crel) => {
             if (!crel.isNode) {
                 t.end('`isNode` is undefined');
             }
@@ -231,7 +231,7 @@ const tests = [
     },
     {
         message: 'Test `isElement` against various arguments',
-        test: (t) => {
+        test: (t, crel) => {
             if (!crel.isElement) {
                 t.end('`isElement` is undefined');
             }
@@ -257,9 +257,28 @@ const tests = [
     }
 ];
 
+let proxyableChecks = 0;
+
 for (const value of tests) {
     test(value.message, (t) => {
         t.plan(value.checks);
-        value.test(t);
+        value.test(t, crel);
     });
+
+    if (value.proxyable) {
+        proxyableChecks += value.checks;
+    }
 }
+
+test('Rerun all "proxy-able" tests through the Proxy API', (t) => {
+    t.plan(proxyableChecks);
+    for (const value of tests) {
+        if (value.proxyable) {
+            value.test(t, (...args) => {
+                let tag = args[0];
+                args.shift();
+                return crel.proxy[tag].apply(this, args);
+            });
+        }
+    }
+});
