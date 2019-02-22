@@ -1,8 +1,13 @@
-const test = require('tape');
-const crel = require('../crel.js');
-
-// All tests inside a handy object list format
-const tests = [
+// Contains all tests in an object list
+// All Object should have the properties:
+// - message : The message, or title, that Tape shows when running a test
+// - test : The test function, takes as arguments:
+//     - t : the Tape test Object
+//     - crel : the function to be ran as crel, replaced by a wrapper when running proxyable tests
+// - checks : the number of test checks ran inside the test function
+// - proxyable : true / false, can the tests crel calls be converted to a proxy format
+//     aka. is the crel calls first argument a tag name (and there's no need to access crels internal properties)
+window.tests = [
     // -- Test element creation --
     {
         message: 'Create an element with no arguments',
@@ -256,29 +261,3 @@ const tests = [
         proxyable: false
     }
 ];
-
-let proxyableChecks = 0;
-
-for (const value of tests) {
-    test(value.message, (t) => {
-        t.plan(value.checks);
-        value.test(t, crel);
-    });
-
-    if (value.proxyable) {
-        proxyableChecks += value.checks;
-    }
-}
-
-test('Rerun all "proxy-able" tests through the Proxy API', (t) => {
-    t.plan(proxyableChecks);
-    for (const value of tests) {
-        if (value.proxyable) {
-            value.test(t, (...args) => {
-                let tag = args[0];
-                args.shift();
-                return crel.proxy[tag].apply(this, args);
-            });
-        }
-    }
-});
