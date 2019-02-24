@@ -34,7 +34,8 @@ This might make it harder to read at times, but the code's intention should be t
             // Define all used variables / shortcuts here, to make things smaller once compiled
             let settings = children[0],
                 key,
-                attribute;
+                attribute,
+                value;
             // If first argument is an element, use it as is, otherwise treat it as a tagname
             element = crel.isElement(element) ? element : d.createElement(element);
             // Check if second argument is a settings object
@@ -55,6 +56,11 @@ This might make it harder to read at times, but the code's intention should be t
                         // - takes a function as a value (ex. `onClick` or any other `onEvent`)
                         // - the key exists in the DOM tree
                         element[key] = attribute;
+                        // This is to help with nested properties, like `style`, as they can't be accessed through `setAttribute` anymore
+                        // We only check and allow for one level of depth
+                        for (value in attribute) {
+                            element[key][value] = attribute[value];
+                        }
                     } else {
                         // Set the element attribute
                         element.setAttribute(key, attribute);
