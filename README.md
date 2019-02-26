@@ -124,13 +124,22 @@ _But don't._
 If you are using Crel in an environment that supports Proxies, you can also use the new API:
 
 ```javascript
-let crel = require('crel').proxy;
-
 let element = crel.div(
     crel.h1('Crello World!'),
     crel.p('This is crel'),
     crel.input({ type: 'number' })
 );
+```
+
+If you want to transform tags to for example get dashes in them, you can define a `tagTransform` function:
+
+```javascript
+// Adds dashes on camelCase, ex: `camelCase` -> `camel-case`
+crel.tagTransform = key => key.replace(/([0-9a-z])([A-Z])/g, '$1-$2');
+
+let element = crel.myTag('Crello World!');
+
+console.log(element.tagName); // my-tag
 ```
 
 # Browser support
