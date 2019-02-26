@@ -86,7 +86,7 @@ This might make it harder to read at times, but the code's intention should be t
         module.exports = product;
     } else if (typeof define === func && define.amd) {
         // Export for RequireJS / AMD format
-        define(product);
+        define(() => product);
     } else {
         // Export as a 'global' function
         this.crel = product;
