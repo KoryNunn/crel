@@ -19,7 +19,7 @@ This might make it harder to read at times, but the code's intention should be t
         isType = (object, type) => typeof object === type,
         // Recursively appends children to given element if they're not `null`. As a text node if not already an element
         appendChild = (element, child) => {
-            if (child !== null) {
+            if (child != null) {
                 if (Array.isArray(child)) { // Support (deeply) nested child elements
                     child.map(subChild => appendChild(element, subChild));
                 } else {
