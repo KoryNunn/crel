@@ -32,12 +32,17 @@ This might make it harder to read at times, but the code's intention should be t
         },
         // Define our function as a proxy interface
         crel = new Proxy((element, ...children) => {
+            // If first argument is an element, use it as is, otherwise treat it as a tagname
+            if (!crel.isElement(element)) {
+                if (!isType(element, 'string') || element.length < 1) {
+                    return; // Do nothing on invalid input
+                }
+                element = d.createElement(element);
+            }
             // Define all used variables / shortcuts here, to make things smaller once compiled
             let settings = children[0],
                 key,
                 attribute;
-            // If first argument is an element, use it as is, otherwise treat it as a tagname
-            element = crel.isElement(element) ? element : d.createElement(element);
             // Check if second argument is a settings object
             if (isType(settings, 'object') && !crel[isNodeString](settings) && !Array.isArray(settings)) {
                 // Don't treat settings as a child
