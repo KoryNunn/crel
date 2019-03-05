@@ -170,12 +170,31 @@ test('Pass invalid elements / tagnames ([nothing], \'\', null, undefined, {}, [n
         'no element was created');
 
     testInput.map(function (value) {
-      testElement = undefined;
+        testElement = undefined;
         t.doesNotThrow(function () { testElement = crel(value); },
             'Pass invalid input: `' + value + '`');
         // Not returning an element on invalid input should be sane behaviour
         t.equal(testElement, undefined,
             'no element was created with invalid input: `' + value + '`');
+    });
+});
+
+test('Pass invalid children (null, undefined)', function (t) {
+    var testElement = crel('div');
+    var testedElement;
+    // ? should empty strings be ignored? Adding empty text nodes only bloats childNodes
+    // ? what about functions and objects as children
+    var testInput = [null, undefined];
+
+    t.plan(testInput.length * 2); // 2 tests for every value in array
+
+    testInput.map(function (value) {
+        t.doesNotThrow(function () { testedElement = crel('div', value); },
+            'Pass invalid child argument: `' + value + '`');
+        // Ignoring invalid children should be sane behaviour
+        t.ok(testElement.isEqualNode(testedElement),
+            'Elements have the same child tree');
+        testedElement = undefined;
     });
 });
 
