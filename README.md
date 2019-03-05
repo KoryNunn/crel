@@ -58,7 +58,7 @@ where `childN` may be:
 
 - a DOM element,
 - a string, which will be inserted as a `textNode`,
-- `null`, which will be ignored, or
+- `null` or `undefined` which will be ignored, or
 - an `Array` containing any of the above
 
 ## Examples
@@ -79,8 +79,7 @@ You can add attributes that have dashes or reserved keywords in the name, by usi
 crel('div', { 'class': 'thing', 'data-attribute': 'majigger' });
 ```
 
-You can define custom functionality for certain keys seen in the attributes
-object:
+You can define custom functionality for certain keys seen in the attributes object:
 
 ```javascript
 crel.attrMap['on'] = (element, value) => {
@@ -124,13 +123,22 @@ _But don't._
 If you are using Crel in an environment that supports Proxies, you can also use the new API:
 
 ```javascript
-let crel = require('crel').proxy;
-
 let element = crel.div(
     crel.h1('Crello World!'),
     crel.p('This is crel'),
     crel.input({ type: 'number' })
 );
+```
+
+If you want to transform tags to for example get dashes in them, you can define a `tagTransform` function:
+
+```javascript
+// Adds dashes on camelCase, ex: `camelCase` -> `camel-case`
+crel.tagTransform = key => key.replace(/([0-9a-z])([A-Z])/g, '$1-$2');
+
+let element = crel.myTag('Crello World!');
+
+console.log(element.tagName); // my-tag
 ```
 
 # Browser support

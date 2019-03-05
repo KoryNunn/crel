@@ -155,6 +155,49 @@ test('Create an element with a deep array of children', function (t) {
     t.equal(testElement.childNodes[2].textContent, 'I will be a text node!');
 });
 
+// -- Test invalid input handling --
+test('Pass invalid elements / tagnames ([nothing], \'\', null, undefined, {}, [numbers])', function (t) {
+    var testElement;
+    // ? what about functions as tagnames
+    // ? should we also add tests for valid input, like with isElement and isNode bellow
+    var testInput = ['', null, undefined, {}, 0, 4.2, -42];
+
+    t.plan((testInput.length + 1) * 2); // 2 tests for every value in array, + for no input
+
+    t.doesNotThrow(function () { testElement = crel(); }, 'Pass no input');
+    // Not returning an element with no input should be sane behaviour
+    t.equal(testElement, undefined,
+        'no element was created');
+
+    testInput.map(function (value) {
+        testElement = undefined;
+        t.doesNotThrow(function () { testElement = crel(value); },
+            'Pass invalid input: `' + value + '`');
+        // Not returning an element on invalid input should be sane behaviour
+        t.equal(testElement, undefined,
+            'no element was created with invalid input: `' + value + '`');
+    });
+});
+
+test('Pass invalid children (null, undefined)', function (t) {
+    var testElement = crel('div');
+    var testedElement;
+    // ? should empty strings be ignored? Adding empty text nodes only bloats childNodes
+    // ? what about functions and objects as children
+    var testInput = [null, undefined];
+
+    t.plan(testInput.length * 2); // 2 tests for every value in array
+
+    testInput.map(function (value) {
+        t.doesNotThrow(function () { testedElement = crel('div', value); },
+            'Pass invalid child argument: `' + value + '`');
+        // Ignoring invalid children should be sane behaviour
+        t.ok(testElement.isEqualNode(testedElement),
+            'Elements have the same child tree');
+        testedElement = undefined;
+    });
+});
+
 // -- Test exposed methods --
 test('Test that `isNode` is defined', function (t) {
     // Assign into a variable to help readability
@@ -222,32 +265,35 @@ test('Test that `isElement` is defined', function (t) {
 });
 
 // -- Test the Proxy API --
-test('Test that the Proxy API is defined', function (t) {
+test('Test that the Proxy API works', function (t) {
     if (typeof Proxy === 'undefined') {
         t.plan(1)
         t.pass('Proxies are not supported in the current environment');
     } else {
-        var proxyCrel = crel.proxy;
+        // I'm not proficient with proxies, so
+        // TODO: Add #moar-tests
+        t.plan(4);
 
-        t.plan(proxyCrel ? 2 : 1);
+        var testElement = crel.proxy.div({'class': 'test'},
+            crel.proxy.span('test'));
 
-        t.ok(proxyCrel, 'The Proxy API is defined');
-
-        if (proxyCrel) {
-            // Do further tests
-            t.test('Test that the Proxy API works', function (ts) {
-                // I'm not proficient with proxies, so
-                // TODO: Add #moar-tests
-                ts.plan(4);
-
-                var testElement = proxyCrel.div({'class': 'test'},
-                    proxyCrel.span('test'));
-
-                ts.equal(testElement.className, 'test');
-                ts.equal(testElement.childNodes.length, 1);
-                ts.equal(testElement.childNodes[0].tagName, 'SPAN');
-                ts.equal(testElement.childNodes[0].textContent, 'test');
-            });
-        }
+        t.equal(testElement.className, 'test');
+        t.equal(testElement.childNodes.length, 1);
+        t.equal(testElement.childNodes[0].tagName, 'SPAN');
+        t.equal(testElement.childNodes[0].textContent, 'test');
     }
+});
+
+// -- Test the Proxy APIs features --
+test('Test the proxy APIs tag transformations', (t) => {
+    t.plan(4);
+
+    crel.tagTransform = (key) => key.replace(/([0-9a-z])([A-Z])/g, '$1-$2').toLowerCase();
+    let testElement = crel.myTable(crel.span('test'));
+
+    t.equal(testElement.tagName, 'MY-TABLE',
+        'tagname had dashes added to it');
+    t.equal(testElement.childNodes.length, 1);
+    t.equal(testElement.childNodes[0].tagName, 'SPAN');
+    t.equal(testElement.childNodes[0].textContent, 'test');
 });
