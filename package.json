@@ -10,8 +10,8 @@
   "module": "crel.mjs",
   "dependencies": {},
   "devDependencies": {
+    "tape-run": "^6.0.1",
     "browserify": "^16.2.3",
-    "opn-cli": "^4.0.0",
     "rollup": "^1.26.3",
     "rollup-plugin-commonjs": "^10.1.0",
     "tape": "^4.9.2",
@@ -26,7 +26,7 @@
     "package.json"
   ],
   "scripts": {
-    "test": "npm run testBuild && opn ./test/test.html",
+    "test": "browserify ./test/index.js | tape-run",
     "testBuild": "browserify ./test/index.js > ./test/index.browser.js",
     "build": "terser crel.js -o crel.min.js --warn --ecma 6 -c evaluate=false,pure_getters -m && rollup -c",
     "prepare": "npm run build"
