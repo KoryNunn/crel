@@ -7,10 +7,9 @@
   ],
   "version": "4.0.1",
   "main": "crel.js",
-  "dependencies": {
-    "tape-run": "^6.0.1"
-  },
+  "dependencies": {},
   "devDependencies": {
+    "tape-run": "^6.0.1",
     "browserify": "^16.2.3",
     "tape": "^4.9.2",
     "terser": "^3.14.1"
