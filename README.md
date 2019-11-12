@@ -39,6 +39,12 @@ require(['crel'], (crel) => {
 });
 ```
 
+Using ES6+:
+
+```javascript
+import crel from 'crel';
+```
+
 For standard script tag style:
 
 ```html
