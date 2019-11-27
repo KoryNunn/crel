@@ -13,7 +13,6 @@ This might make it harder to read at times, but the code's intention should be t
     // These strings are used multiple times, so this makes things smaller once compiled
     const func = 'function',
         isNodeString = 'isNode',
-        d = document,
         // Helper functions used throughout the script
         isType = (object, type) => typeof object === type,
         // Recursively appends children to given element. As a text node if not already an element
@@ -23,7 +22,7 @@ This might make it harder to read at times, but the code's intention should be t
                     child.map(subChild => appendChild(element, subChild));
                 } else {
                     if (!crel[isNodeString](child)) {
-                        child = d.createTextNode(child);
+                        child = document.createTextNode(child);
                     }
                     element.appendChild(child);
                 }
@@ -37,7 +36,7 @@ This might make it harder to read at times, but the code's intention should be t
             key,
             attribute;
         // If first argument is an element, use it as is, otherwise treat it as a tagname
-        element = crel.isElement(element) ? element : d.createElement(element);
+        element = crel.isElement(element) ? element : document.createElement(element);
         // Check if second argument is a settings object
         if (isType(settings, 'object') && !crel[isNodeString](settings) && !Array.isArray(settings)) {
             // Don't treat settings as a child
