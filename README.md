@@ -18,6 +18,10 @@ Crel makes this process easier.
 Inspiration was taken from [laconic](https://github.com/joestelmach/laconic), but Crel wont screw with your bad in-DOM event listeners, and it's smaller,
 faster, etc...
 
+# Changelog
+
+[View changelog](https://changelogit.korynunn.com/#korynunn/crel)
+
 # Installing
 
 For browserify:
