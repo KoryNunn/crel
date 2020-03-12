@@ -5,7 +5,7 @@
   "tags": [
     "DOM"
   ],
-  "version": "4.2.0",
+  "version": "4.2.1",
   "main": "crel.js",
   "module": "crel.es.js",
   "dependencies": {},
